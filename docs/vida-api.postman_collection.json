@@ -1,0 +1,328 @@
+{
+  "info": {
+    "_postman_id": "vida-api-collection",
+    "name": "Vida API",
+    "description": "Personal Finance PWA — API collection. Base URL and variables are defined in the collection variables below.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "https://api.yourdomain.com/api/v1", "type": "string" },
+    { "key": "local_url", "value": "http://localhost:3000/api/v1", "type": "string" },
+    { "key": "month", "value": "2026-04", "type": "string" },
+    { "key": "card_id", "value": "card-uuid-123", "type": "string" },
+    { "key": "bill_id", "value": "bill-uuid-456", "type": "string" },
+    { "key": "transaction_id", "value": "tx-uuid-789", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Create Session (Login)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accessToken\": \"eyJ...\",\n  \"idToken\": \"eyJ...\",\n  \"refreshToken\": \"eyJ...\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/session",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "session"]
+            },
+            "description": "Exchange Cognito tokens for httpOnly session cookies. Public endpoint — no auth required."
+          }
+        },
+        {
+          "name": "Refresh Session",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/auth/refresh",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "refresh"]
+            },
+            "description": "Rotate RefreshToken and reissue session cookies. Reads refreshToken cookie automatically."
+          }
+        },
+        {
+          "name": "Delete Session (Logout)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/auth/session",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "session"]
+            },
+            "description": "Clear session cookies and terminate the session."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cards",
+      "item": [
+        {
+          "name": "Create Card",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nickname\": \"Nubank\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/cards",
+              "host": ["{{base_url}}"],
+              "path": ["cards"]
+            }
+          }
+        },
+        {
+          "name": "List Cards",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/cards?active=true",
+              "host": ["{{base_url}}"],
+              "path": ["cards"],
+              "query": [
+                { "key": "active", "value": "true", "description": "true | false | all" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Card",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nickname\": \"Nubank Black\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/cards/{{card_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["cards", "{{card_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Card (Soft)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/cards/{{card_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["cards", "{{card_id}}"]
+            },
+            "description": "Soft-delete: sets active = false. Historical transactions preserved."
+          }
+        },
+        {
+          "name": "Reactivate Card",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/cards/{{card_id}}/reactivate",
+              "host": ["{{base_url}}"],
+              "path": ["cards", "{{card_id}}", "reactivate"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bills",
+      "item": [
+        {
+          "name": "Create Bill",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Netflix\",\n  \"amount\": 39.90,\n  \"dueDay\": 15,\n  \"category\": \"ENTERTAINMENT\",\n  \"paidVia\": \"CREDIT_CARD#{{card_id}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/bills",
+              "host": ["{{base_url}}"],
+              "path": ["bills"]
+            }
+          }
+        },
+        {
+          "name": "List Bills",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/bills?active=true",
+              "host": ["{{base_url}}"],
+              "path": ["bills"],
+              "query": [
+                { "key": "active", "value": "true", "description": "true | false | all" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Bill",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 45.90,\n  \"dueDay\": 20\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/bills/{{bill_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["bills", "{{bill_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Bill (Soft)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/bills/{{bill_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["bills", "{{bill_id}}"]
+            },
+            "description": "Soft-delete: sets active = false. Excluded from future monthly generation."
+          }
+        },
+        {
+          "name": "Reactivate Bill",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/bills/{{bill_id}}/reactivate",
+              "host": ["{{base_url}}"],
+              "path": ["bills", "{{bill_id}}", "reactivate"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Transactions",
+      "item": [
+        {
+          "name": "Create Transaction",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 45.90,\n  \"description\": \"Lunch\",\n  \"category\": \"FOOD\",\n  \"paidVia\": \"CASH\",\n  \"date\": \"2026-04-25T12:30:00\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/transactions",
+              "host": ["{{base_url}}"],
+              "path": ["transactions"]
+            },
+            "description": "Category must be one of: FOOD, TRANSPORT, UTILITIES, ENTERTAINMENT, HEALTH, HOUSING, OTHER.\npaidVia: CASH | DEBIT | CREDIT_CARD#<card_id>"
+          }
+        },
+        {
+          "name": "List Transactions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/transactions?month={{month}}",
+              "host": ["{{base_url}}"],
+              "path": ["transactions"],
+              "query": [
+                { "key": "month", "value": "{{month}}", "description": "YYYY-MM (defaults to current month)" },
+                { "key": "paidVia", "value": "", "description": "CASH | DEBIT | CREDIT_CARD#<card_id>", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "List Transactions — Credit Card Audit",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/transactions?month={{month}}&paidVia=CREDIT_CARD%23{{card_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["transactions"],
+              "query": [
+                { "key": "month", "value": "{{month}}" },
+                { "key": "paidVia", "value": "CREDIT_CARD%23{{card_id}}", "description": "URL-encode the # as %23" }
+              ]
+            },
+            "description": "Filter transactions by a specific credit card. Used for the Credit Card Audit view."
+          }
+        },
+        {
+          "name": "Delete Transaction (Soft)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/transactions/{{transaction_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["transactions", "{{transaction_id}}"]
+            },
+            "description": "Soft-delete: sets deleted = true. Preserves history for monthly snapshots."
+          }
+        },
+        {
+          "name": "Mark Transaction as Paid",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/transactions/{{transaction_id}}/pay",
+              "host": ["{{base_url}}"],
+              "path": ["transactions", "{{transaction_id}}", "pay"]
+            },
+            "description": "Marks a BILL_PAYMENT transaction as paid. Sets status = PAID and paidAt timestamp."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Summary",
+      "item": [
+        {
+          "name": "Get Monthly Summary",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/summary?month={{month}}",
+              "host": ["{{base_url}}"],
+              "path": ["summary"],
+              "query": [
+                { "key": "month", "value": "{{month}}", "description": "YYYY-MM (defaults to current month)" }
+              ]
+            },
+            "description": "Returns total spent, breakdown by category, and breakdown by payment method (including per-card totals)."
+          }
+        }
+      ]
+    }
+  ]
+}

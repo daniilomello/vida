@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__claude_ai_Excalidraw__read_me",
+      "mcp__claude_ai_Excalidraw__export_to_excalidraw",
+      "mcp__github__get_me",
+      "Bash(git init *)",
+      "Bash(git checkout *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)"
+    ]
+  }
+}
