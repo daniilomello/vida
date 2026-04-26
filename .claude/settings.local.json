@@ -7,7 +7,30 @@
       "Bash(git init *)",
       "Bash(git checkout *)",
       "Bash(git add *)",
-      "Bash(git commit -m ' *)"
+      "Bash(git commit -m ' *)",
+      "Bash(gh repo *)",
+      "Bash(git remote *)",
+      "Bash(git push *)",
+      "Bash(gh auth *)",
+      "Bash(gh config *)",
+      "mcp__github__create_branch",
+      "Bash(gh label *)",
+      "Bash(gh api *)",
+      "mcp__github__issue_write",
+      "Bash(gh project *)",
+      "mcp__github__search_repositories",
+      "mcp__github__list_issues",
+      "Bash(npm install *)",
+      "Bash(npx biome *)",
+      "Bash(npm run *)",
+      "Bash(curl -s http://localhost:5173)",
+      "Bash(curl -s http://localhost:3000/api/v1/health)",
+      "Bash(kill %1)",
+      "Bash(git fetch *)",
+      "Bash(git commit *)",
+      "Bash(git rm *)",
+      "Bash(gh pr *)",
+      "Bash(bash --version)"
     ]
   }
 }
