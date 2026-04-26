@@ -1,0 +1,37 @@
+service: vida-backend
+
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: ${env:AWS_REGION, 'us-east-1'}
+  stage: ${opt:stage, 'local'}
+  environment:
+    STAGE: ${self:provider.stage}
+
+plugins:
+  - serverless-esbuild
+  - serverless-offline
+
+custom:
+  serverless-offline:
+    httpPort: 3000
+    lambdaPort: 3002
+    noPrependStageInUrl: true
+  esbuild:
+    bundle: true
+    minify: false
+    sourcemap: true
+    target: node20
+    platform: node
+    concurrency: 10
+
+functions:
+  health:
+    handler: src/handlers/health.handler
+    events:
+      - http:
+          path: /api/v1/health
+          method: get
+          cors: true
