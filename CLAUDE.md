@@ -28,12 +28,52 @@ Personal Finance PWA for tracking daily expenses, recurring bills, and credit ca
 - Standards: `docs/standards.md`
 - Postman collection: `docs/vida-api.postman_collection.json`
 
+## Git Workflow
+Always follow this process end-to-end when implementing any issue — no exceptions.
+
+### Branch naming
+```
+feature/<issue-number>-<short-description>   ← new features and setup
+fix/<issue-number>-<short-description>        ← bug fixes
+```
+- Always branch from `develop`
+- When a branch depends on another unmerged branch, branch from it and set that branch as the PR base
+
+### Commit messages
+Follow Conventional Commits (see `docs/standards.md` section 6):
+```
+<type>(scope): <description>
+```
+Examples: `feat(auth): add OTP login`, `chore(config): add Biome config`, `fix(bills): clamp dueDay`
+
+### End-to-end flow (always complete all steps)
+1. Branch from `develop` → `feature/<issue-number>-<short-description>`
+2. Implement the changes
+3. Commit with Conventional Commits message including `Closes #<issue-number>` in the body
+4. Push the branch to `origin`
+5. Open a PR targeting `develop` using GitHub MCP or `gh pr create`
+6. PR body must include `Closes #<issue-number>` to auto-close the issue on merge
+
+Never stop at commit — always push and open the PR.
+
 ## Branching Strategy
 Git Flow: work from `develop`, PRs target `develop`, releases merge to `main`.
 Never push directly to `main`.
 
 ## Local Development
-_To be documented once scaffolding (issues #36 and #37) is complete._
+Run both services concurrently from the root:
+```bash
+npm run dev
+```
+- Frontend: http://localhost:5173 (Vite)
+- Backend: http://localhost:3000 (serverless-offline)
+- Health check: `GET http://localhost:3000/api/v1/health`
+
+Copy `.env.example` files before running:
+```bash
+cp frontend/.env.example frontend/.env
+cp backend/.env.example backend/.env
+```
 
 ## Issue Labels in Use
 `infra`, `frontend`, `backend`, `auth`, `ci`, `pwa`, `database`
