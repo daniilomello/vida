@@ -4,7 +4,8 @@ import { Label } from "@/components/ui/label";
 import { initiateOtp, loginWithPassword, verifyOtp } from "@/lib/cognito";
 import { useAuthStore } from "@/store/auth.store";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 type Tab = "password" | "otp";
 type OtpStep = "email" | "code";
@@ -37,6 +38,13 @@ export function LoginPage() {
         </div>
 
         {tab === "password" ? <PasswordForm /> : <OtpForm />}
+
+        <p className="mt-6 text-center text-sm text-gray-500">
+          Don't have an account?{" "}
+          <Link to="/signup" className="font-medium text-black hover:underline">
+            Create one
+          </Link>
+        </p>
       </div>
     </main>
   );
@@ -45,21 +53,19 @@ export function LoginPage() {
 function PasswordForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const setAuthenticated = useAuthStore((s) => s.setAuthenticated);
   const navigate = useNavigate();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setError("");
     setLoading(true);
     try {
-      await loginWithPassword(email, password);
-      setAuthenticated();
+      const tokens = await loginWithPassword(email, password);
+      setAuthenticated(tokens);
       navigate("/");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Sign in failed");
+      toast.error(err instanceof Error ? err.message : "Sign in failed");
     } finally {
       setLoading(false);
     }
@@ -91,7 +97,6 @@ function PasswordForm() {
           placeholder="••••••••"
         />
       </div>
-      {error && <p className="text-sm text-red-600">{error}</p>}
       <Button type="submit" className="w-full" loading={loading}>
         Sign in
       </Button>
@@ -100,25 +105,36 @@ function PasswordForm() {
 }
 
 function OtpForm() {
-  const [step, setStep] = useState<OtpStep>("email");
+  const [step, setOtpStep] = useState<OtpStep>("email");
   const [email, setEmail] = useState("");
-  const [session, setSession] = useState("");
   const [code, setCode] = useState("");
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const setAuthenticated = useAuthStore((s) => s.setAuthenticated);
   const navigate = useNavigate();
 
   async function handleRequestCode(e: React.FormEvent) {
     e.preventDefault();
-    setError("");
     setLoading(true);
     try {
-      const s = await initiateOtp(email);
-      setSession(s);
-      setStep("code");
+      await initiateOtp(email);
+      setOtpStep("code");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to send code");
+      const msg = err instanceof Error ? err.message : "Failed to send code";
+      if (msg.includes("No account found")) {
+        toast.error("No account found for this email.", {
+          description: (
+            <span>
+              <a href="/signup" className="underline">
+                Create an account
+              </a>{" "}
+              to get started.
+            </span>
+          ),
+          duration: 6000,
+        });
+      } else {
+        toast.error(msg);
+      }
     } finally {
       setLoading(false);
     }
@@ -126,14 +142,13 @@ function OtpForm() {
 
   async function handleVerifyCode(e: React.FormEvent) {
     e.preventDefault();
-    setError("");
     setLoading(true);
     try {
-      await verifyOtp(email, session, code);
-      setAuthenticated();
+      const tokens = await verifyOtp(code);
+      setAuthenticated(tokens);
       navigate("/");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Invalid or expired code");
+      toast.error(err instanceof Error ? err.message : "Invalid or expired code");
     } finally {
       setLoading(false);
     }
@@ -154,7 +169,6 @@ function OtpForm() {
             placeholder="you@example.com"
           />
         </div>
-        {error && <p className="text-sm text-red-600">{error}</p>}
         <Button type="submit" className="w-full" loading={loading}>
           Send one-time code
         </Button>
@@ -182,16 +196,14 @@ function OtpForm() {
           placeholder="123456"
         />
       </div>
-      {error && <p className="text-sm text-red-600">{error}</p>}
       <Button type="submit" className="w-full" loading={loading}>
         Verify code
       </Button>
       <button
         type="button"
         onClick={() => {
-          setStep("email");
+          setOtpStep("email");
           setCode("");
-          setError("");
         }}
         className="w-full text-sm text-gray-500 hover:text-black"
       >
