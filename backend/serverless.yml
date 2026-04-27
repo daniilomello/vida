@@ -42,8 +42,16 @@ provider:
             - "arn:aws:dynamodb:${self:provider.region}:*:table/FinanceApp-Data"
             - "arn:aws:dynamodb:${self:provider.region}:*:table/FinanceApp-Data/index/GSI-Type"
 
+build:
+  esbuild:
+    bundle: true
+    minify: false
+    sourcemap:
+      type: linked
+      setNodeOptions: true
+    buildConcurrency: 10
+
 plugins:
-  - serverless-esbuild
   - serverless-offline
 
 custom:
@@ -51,14 +59,6 @@ custom:
     httpPort: 3000
     lambdaPort: 3002
     noPrependStageInUrl: true
-
-  esbuild:
-    bundle: true
-    minify: false
-    sourcemap: true
-    target: node20
-    platform: node
-    concurrency: 10
 
   # Reusable CORS config — referenced as *cors on every http event (spec section 3.4)
   # Wildcard origin is forbidden when credentials are included; exact origin required.
