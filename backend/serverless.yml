@@ -23,11 +23,6 @@ provider:
         burstLimit: 100
         rateLimit: 50
 
-  # IAM grants for DynamoDB access (table and GSI-Type index).
-  # Avoid !Sub + ${AWS::Region} here: SLS variable resolver runs before CloudFormation
-  # and treats ${AWS::Region} as an unresolvable SLS variable, producing an invalid CF
-  # template (github.com/serverless/serverless/issues/3967). Use ${self:provider.region}
-  # instead. Once the table is defined in resources (issue #2), replace with !GetAtt.
   iam:
     role:
       statements:
@@ -39,8 +34,8 @@ provider:
             - dynamodb:UpdateItem
             - dynamodb:DeleteItem
           Resource:
-            - "arn:aws:dynamodb:${self:provider.region}:*:table/FinanceApp-Data"
-            - "arn:aws:dynamodb:${self:provider.region}:*:table/FinanceApp-Data/index/GSI-Type"
+            - !GetAtt FinanceAppTable.Arn
+            - !Sub "${FinanceAppTable.Arn}/index/GSI-Type"
 
 build:
   esbuild:
@@ -77,3 +72,32 @@ functions:
           path: api/v1/health
           method: get
           cors: *cors
+
+resources:
+  Resources:
+    FinanceAppTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: FinanceApp-Data
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: PK
+            AttributeType: S
+          - AttributeName: SK
+            AttributeType: S
+          - AttributeName: type
+            AttributeType: S
+        KeySchema:
+          - AttributeName: PK
+            KeyType: HASH
+          - AttributeName: SK
+            KeyType: RANGE
+        GlobalSecondaryIndexes:
+          - IndexName: GSI-Type
+            KeySchema:
+              - AttributeName: type
+                KeyType: HASH
+              - AttributeName: PK
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
