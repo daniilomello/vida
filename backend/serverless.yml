@@ -1,6 +1,6 @@
 service: vida-backend
 
-frameworkVersion: "3"
+frameworkVersion: "4"
 
 provider:
   name: aws
@@ -13,14 +13,21 @@ provider:
     FRONTEND_ORIGIN: ${env:FRONTEND_ORIGIN, 'http://localhost:5173'}
     DYNAMODB_TABLE: FinanceApp-Data
 
-  # Rate limiting: 100 req/s burst, 50 req/s steady-state (spec section 3.4)
+  # Rate limiting: 100 req/s burst, 50 req/s steady-state (spec section 3.4).
+  # Note: usagePlan throttle is enforced per API key. This app uses cookie-based
+  # Cognito auth (not API keys), so this provisions the usage plan infra as specified.
+  # True stage-level throttle for all traffic requires a custom CF MethodSettings resource.
   apiGateway:
     usagePlan:
       throttle:
         burstLimit: 100
         rateLimit: 50
 
-  # IAM grants for DynamoDB access (table and GSI-Type index)
+  # IAM grants for DynamoDB access (table and GSI-Type index).
+  # Avoid !Sub + ${AWS::Region} here: SLS variable resolver runs before CloudFormation
+  # and treats ${AWS::Region} as an unresolvable SLS variable, producing an invalid CF
+  # template (github.com/serverless/serverless/issues/3967). Use ${self:provider.region}
+  # instead. Once the table is defined in resources (issue #2), replace with !GetAtt.
   iam:
     role:
       statements:
@@ -32,11 +39,19 @@ provider:
             - dynamodb:UpdateItem
             - dynamodb:DeleteItem
           Resource:
-            - !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/FinanceApp-Data"
-            - !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/FinanceApp-Data/index/GSI-Type"
+            - "arn:aws:dynamodb:${self:provider.region}:*:table/FinanceApp-Data"
+            - "arn:aws:dynamodb:${self:provider.region}:*:table/FinanceApp-Data/index/GSI-Type"
+
+build:
+  esbuild:
+    bundle: true
+    minify: false
+    sourcemap:
+      type: linked
+      setNodeOptions: true
+    buildConcurrency: 10
 
 plugins:
-  - serverless-esbuild
   - serverless-offline
 
 custom:
@@ -44,14 +59,6 @@ custom:
     httpPort: 3000
     lambdaPort: 3002
     noPrependStageInUrl: true
-
-  esbuild:
-    bundle: true
-    minify: false
-    sourcemap: true
-    target: node20
-    platform: node
-    concurrency: 10
 
   # Reusable CORS config — referenced as *cors on every http event (spec section 3.4)
   # Wildcard origin is forbidden when credentials are included; exact origin required.
