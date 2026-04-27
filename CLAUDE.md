@@ -37,7 +37,10 @@ Personal Finance PWA for tracking daily expenses, recurring bills, and credit ca
 - PRD: `docs/prd.md`
 - Spec: `docs/spec.md`
 - Standards: `docs/standards.md`
-- Postman collection: `docs/vida-api.postman_collection.json`
+- API collection (Yaak): `docs/yaak.json`
+
+## API Collection (Yaak)
+Always keep `docs/yaak.json` up to date. Any time a new API route is created or an existing one is modified, update `docs/yaak.json` to reflect the change — including the request method, path, body, query params, and any new variables required to test the route.
 
 ## Git Workflow
 Always follow this process end-to-end when implementing any issue — no exceptions.
@@ -93,6 +96,19 @@ A successful `dev` deploy is required before opening any infrastructure PR.
 ## Branching Strategy
 Git Flow: work from `develop`, PRs target `develop`, releases merge to `main`.
 Never push directly to `main`.
+
+## Release Process
+Releases follow semantic versioning (`vMAJOR.MINOR.PATCH`). To cut a release:
+
+1. Merge `develop` → `main` via a PR titled `release: vX.Y.Z`
+2. After the PR merges, tag `main`:
+   ```bash
+   git checkout main && git pull
+   git tag vX.Y.Z && git push origin vX.Y.Z
+   ```
+3. GitHub Actions (`release.yml`) automatically creates a GitHub Release with auto-generated release notes compiled from merged PRs since the last tag.
+
+**Version guidance:** bump `PATCH` for fixes, `MINOR` for new features, `MAJOR` for breaking changes.
 
 ## Local Development
 Run both services concurrently from the root:

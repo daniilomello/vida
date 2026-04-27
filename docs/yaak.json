@@ -8,6 +8,12 @@
   "variable": [
     { "key": "base_url", "value": "https://api.yourdomain.com/api/v1", "type": "string" },
     { "key": "local_url", "value": "http://localhost:3000/api/v1", "type": "string" },
+    { "key": "cognito_region", "value": "us-east-1", "type": "string" },
+    { "key": "cognito_user_pool_id", "value": "us-east-1_hrpkFb9KL", "type": "string" },
+    { "key": "cognito_client_id", "value": "739rgin7auou5l0tbhejbo6og2", "type": "string" },
+    { "key": "access_token", "value": "", "type": "string" },
+    { "key": "id_token", "value": "", "type": "string" },
+    { "key": "refresh_token", "value": "", "type": "string" },
     { "key": "month", "value": "2026-04", "type": "string" },
     { "key": "card_id", "value": "card-uuid-123", "type": "string" },
     { "key": "bill_id", "value": "bill-uuid-456", "type": "string" },
