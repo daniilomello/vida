@@ -1,0 +1,72 @@
+service: vida-backend
+
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: ${env:AWS_REGION, 'us-east-1'}
+  stage: ${opt:stage, 'local'}
+
+  environment:
+    STAGE: ${self:provider.stage}
+    FRONTEND_ORIGIN: ${env:FRONTEND_ORIGIN, 'http://localhost:5173'}
+    DYNAMODB_TABLE: FinanceApp-Data
+
+  # Rate limiting: 100 req/s burst, 50 req/s steady-state (spec section 3.4)
+  apiGateway:
+    usagePlan:
+      throttle:
+        burstLimit: 100
+        rateLimit: 50
+
+  # IAM grants for DynamoDB access (table and GSI-Type index)
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource:
+            - !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/FinanceApp-Data"
+            - !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/FinanceApp-Data/index/GSI-Type"
+
+plugins:
+  - serverless-esbuild
+  - serverless-offline
+
+custom:
+  serverless-offline:
+    httpPort: 3000
+    lambdaPort: 3002
+    noPrependStageInUrl: true
+
+  esbuild:
+    bundle: true
+    minify: false
+    sourcemap: true
+    target: node20
+    platform: node
+    concurrency: 10
+
+  # Reusable CORS config — referenced as *cors on every http event (spec section 3.4)
+  # Wildcard origin is forbidden when credentials are included; exact origin required.
+  cors: &cors
+    origin: ${env:FRONTEND_ORIGIN, 'http://localhost:5173'}
+    headers:
+      - Content-Type
+      - X-Requested-With
+    allowCredentials: true
+
+functions:
+  health:
+    handler: src/handlers/health.handler
+    events:
+      - http:
+          path: api/v1/health
+          method: get
+          cors: *cors
