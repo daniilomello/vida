@@ -1,5 +1,13 @@
 # CLAUDE.md
 
+## Documentation Lookups
+Always use **Context7 MCP** to fetch current documentation before working with any library, framework, SDK, API, or CLI tool in this stack — including React, Vite, Tailwind, Zustand, React Router, AWS SDK, Serverless Framework, DynamoDB, Cognito, Biome, Vitest, and Jest.
+
+1. Resolve the library ID: `mcp__claude_ai_Context7__resolve-library-id`
+2. Fetch the docs: `mcp__claude_ai_Context7__query-docs`
+
+Use this even for well-known APIs — training data may be outdated.
+
 ## GitHub Operations
 Always use the **GitHub MCP** (preferred) or `gh` CLI for all GitHub operations — never ask the user which to use.
 
