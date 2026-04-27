@@ -11,7 +11,7 @@ provider:
   environment:
     STAGE: ${self:provider.stage}
     FRONTEND_ORIGIN: ${env:FRONTEND_ORIGIN, 'http://localhost:5173'}
-    DYNAMODB_TABLE: FinanceApp-Data
+    DYNAMODB_TABLE: FinanceApp-Data-${self:provider.stage}
     SES_FROM_EMAIL: ${env:SES_FROM_EMAIL, 'noreply@vida.app'}
 
   # Rate limiting: 100 req/s burst, 50 req/s steady-state (spec section 3.4).
@@ -94,7 +94,7 @@ resources:
     FinanceAppTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: FinanceApp-Data
+        TableName: FinanceApp-Data-${self:provider.stage}
         BillingMode: PAY_PER_REQUEST
         AttributeDefinitions:
           - AttributeName: PK

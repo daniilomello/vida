@@ -60,12 +60,35 @@ Examples: `feat(auth): add OTP login`, `chore(config): add Biome config`, `fix(b
 ### End-to-end flow (always complete all steps)
 1. Branch from `develop` → `feature/<issue-number>-<short-description>`
 2. Implement the changes
-3. Commit with Conventional Commits message including `Closes #<issue-number>` in the body
-4. Push the branch to `origin`
-5. Open a PR targeting `develop` using GitHub MCP or `gh pr create`
-6. PR body must include `Closes #<issue-number>` to auto-close the issue on merge
+3. **Run pre-PR verification** (see section below) — fix all failures before continuing
+4. Commit with Conventional Commits message including `Closes #<issue-number>` in the body
+5. Push the branch to `origin`
+6. Open a PR targeting `develop` using GitHub MCP or `gh pr create`
+7. PR body must include `Closes #<issue-number>` to auto-close the issue on merge
 
 Never stop at commit — always push and open the PR.
+
+### Pre-PR Verification (mandatory before every commit + PR)
+
+Run every applicable check and fix all failures before opening the PR. Do not skip any step.
+
+**Backend changes** (`backend/`):
+```bash
+cd backend && npm run check   # Biome lint + format
+cd backend && npm run test    # Jest
+```
+
+**Frontend changes** (`frontend/`):
+```bash
+cd frontend && npm run check  # Biome lint + format
+cd frontend && npm run test   # Vitest
+```
+
+**Infrastructure changes** (`serverless.yml`, IAM, CloudFormation resources):
+```bash
+cd backend && serverless deploy --stage dev
+```
+A successful `dev` deploy is required before opening any infrastructure PR.
 
 ## Branching Strategy
 Git Flow: work from `develop`, PRs target `develop`, releases merge to `main`.

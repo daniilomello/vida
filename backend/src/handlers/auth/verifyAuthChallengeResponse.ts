@@ -1,4 +1,4 @@
-import type { VerifyAuthChallengeResponseTriggerHandler } from 'aws-lambda';
+import type { VerifyAuthChallengeResponseTriggerHandler } from "aws-lambda";
 
 export const handler: VerifyAuthChallengeResponseTriggerHandler = async (event) => {
   const expected = event.request.privateChallengeParameters.answer;
