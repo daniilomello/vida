@@ -42,7 +42,8 @@ provider:
             - ses:SendEmail
             - ses:SendRawEmail
           Resource:
-            - !Sub "arn:aws:ses:${AWS::Region}:${AWS::AccountId}:identity/${env:SES_FROM_EMAIL, 'noreply@vida.app'}"
+            - !Sub "arn:aws:ses:${AWS::Region}:${AWS::AccountId}:identity/${env:SES_DOMAIN, 'vida.app'}"
+            - !Sub "arn:aws:ses:${AWS::Region}:${AWS::AccountId}:configuration-set/*"
 
 build:
   esbuild:
@@ -153,7 +154,8 @@ resources:
           - email
         EmailConfiguration:
           EmailSendingAccount: DEVELOPER
-          SourceArn: !Sub "arn:aws:ses:${AWS::Region}:${AWS::AccountId}:identity/${env:SES_FROM_EMAIL, 'noreply@vida.app'}"
+          SourceArn: !Sub "arn:aws:ses:${AWS::Region}:${AWS::AccountId}:identity/${env:SES_DOMAIN, 'vida.app'}"
+          From: ${env:SES_FROM_EMAIL, 'noreply@vida.app'}
         LambdaConfig:
           DefineAuthChallenge: !GetAtt DefineAuthChallengeLambdaFunction.Arn
           CreateAuthChallenge: !GetAtt CreateAuthChallengeLambdaFunction.Arn
@@ -194,13 +196,6 @@ resources:
         IdTokenValidity: 60
         RefreshTokenValidity: 30
 
-    # SES email identity used for sending OTP emails.
-    # After deployment, the address must be verified in the AWS Console
-    # (or DNS records added if using a domain identity) before SES can send emails.
-    SESEmailIdentity:
-      Type: AWS::SES::EmailIdentity
-      Properties:
-        EmailIdentity: ${env:SES_FROM_EMAIL, 'noreply@vida.app'}
 
   Outputs:
     CognitoUserPoolId:

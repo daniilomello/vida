@@ -7,6 +7,10 @@ export const handler: CreateAuthChallengeTriggerHandler = async (event) => {
   let secretCode: string;
 
   if (event.request.session.length === 0) {
+    if (event.request.userNotFound) {
+      throw new Error("No account found for this email address.");
+    }
+
     secretCode = String(Math.floor(100000 + Math.random() * 900000));
 
     await ses.send(
@@ -29,7 +33,6 @@ export const handler: CreateAuthChallengeTriggerHandler = async (event) => {
       }),
     );
   } else {
-    // Reuse the code stored in challengeMetadata from the previous attempt
     const prev = event.request.session[event.request.session.length - 1];
     secretCode = prev.challengeMetadata ?? "";
   }
