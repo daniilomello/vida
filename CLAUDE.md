@@ -1,5 +1,8 @@
 # CLAUDE.md
 
+## General Rules
+- Never include `Co-Authored-By: Claude` or any Claude/Anthropic attribution in commit messages, PR bodies, or branch names.
+
 ## Documentation Lookups
 Always use **Context7 MCP** to fetch current documentation before working with any library, framework, SDK, API, or CLI tool in this stack — including React, Vite, Tailwind, Zustand, React Router, AWS SDK, Serverless Framework, DynamoDB, Cognito, Biome, Vitest, and Jest.
 
