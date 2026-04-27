@@ -12,8 +12,6 @@ provider:
     STAGE: ${self:provider.stage}
     FRONTEND_ORIGIN: ${env:FRONTEND_ORIGIN, 'http://localhost:5173'}
     DYNAMODB_TABLE: FinanceApp-Data
-    COGNITO_USER_POOL_ID: !Ref CognitoUserPool
-    COGNITO_CLIENT_ID: !Ref CognitoUserPoolClient
     SES_FROM_EMAIL: ${env:SES_FROM_EMAIL, 'noreply@vida.app'}
 
   # Rate limiting: 100 req/s burst, 50 req/s steady-state (spec section 3.4).
