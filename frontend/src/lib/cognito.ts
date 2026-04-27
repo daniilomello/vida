@@ -1,88 +1,102 @@
-import { AuthenticationDetails, CognitoUser, CognitoUserPool } from "amazon-cognito-identity-js";
+import {
+  AuthenticationDetails,
+  CognitoUser,
+  CognitoUserAttribute,
+  CognitoUserPool,
+} from "amazon-cognito-identity-js";
 
-const REGION = import.meta.env.VITE_COGNITO_REGION;
 const CLIENT_ID = import.meta.env.VITE_COGNITO_CLIENT_ID;
 const USER_POOL_ID = import.meta.env.VITE_COGNITO_USER_POOL_ID;
-const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
-const COGNITO_ENDPOINT = `https://cognito-idp.${REGION}.amazonaws.com/`;
-
-interface AuthResult {
-  AccessToken: string;
-  IdToken: string;
-  RefreshToken: string;
+export interface AuthTokens {
+  accessToken: string;
+  idToken: string;
+  refreshToken: string;
 }
 
-async function cognitoPost(target: string, body: object): Promise<Record<string, unknown>> {
-  const res = await fetch(COGNITO_ENDPOINT, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-amz-json-1.1",
-      "X-Amz-Target": `AmazonCognitoIdentityProviderService.${target}`,
-    },
-    body: JSON.stringify(body),
+let _otpUser: CognitoUser | null = null;
+
+function makePool() {
+  return new CognitoUserPool({ UserPoolId: USER_POOL_ID, ClientId: CLIENT_ID });
+}
+
+export async function signUp(email: string, password: string): Promise<void> {
+  const pool = makePool();
+  const attrs = [new CognitoUserAttribute({ Name: "email", Value: email })];
+  return new Promise((resolve, reject) => {
+    pool.signUp(email, password, attrs, [], (err) => {
+      if (err) reject(new Error(err.message ?? "Sign up failed"));
+      else resolve();
+    });
   });
-  const data = (await res.json()) as Record<string, unknown>;
-  if (!res.ok) {
-    const msg =
-      typeof data.message === "string" ? data.message : String(data.__type ?? "Cognito error");
-    throw new Error(msg);
-  }
-  return data;
 }
 
-async function persistSession(
-  accessToken: string,
-  idToken: string,
-  refreshToken: string,
-): Promise<void> {
-  const res = await fetch(`${API_BASE}/api/v1/auth/session`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
-    body: JSON.stringify({ accessToken, idToken, refreshToken }),
+export async function signUpOtp(email: string): Promise<string> {
+  const randomPw = `Aa1!${crypto.randomUUID().replace(/-/g, "")}`;
+  await signUp(email, randomPw);
+  return randomPw;
+}
+
+export async function confirmSignup(email: string, code: string): Promise<void> {
+  const user = new CognitoUser({ Username: email, Pool: makePool() });
+  return new Promise((resolve, reject) => {
+    user.confirmRegistration(code, true, (err) => {
+      if (err) reject(new Error(err.message ?? "Confirmation failed"));
+      else resolve();
+    });
   });
-  if (!res.ok) throw new Error("Failed to create session — backend not yet available");
 }
 
-export async function initiateOtp(email: string): Promise<string> {
-  const data = await cognitoPost("InitiateAuth", {
-    AuthFlow: "CUSTOM_AUTH",
-    ClientId: CLIENT_ID,
-    AuthParameters: { USERNAME: email },
+export async function initiateOtp(email: string): Promise<void> {
+  const user = new CognitoUser({ Username: email, Pool: makePool() });
+  user.setAuthenticationFlowType("CUSTOM_AUTH");
+  _otpUser = user;
+
+  return new Promise((resolve, reject) => {
+    user.initiateAuth(new AuthenticationDetails({ Username: email }), {
+      customChallenge: () => resolve(),
+      onSuccess: () => resolve(),
+      onFailure: (err) => {
+        _otpUser = null;
+        reject(new Error(err.message ?? "Failed to send code"));
+      },
+    });
   });
-  return data.Session as string;
 }
 
-export async function verifyOtp(email: string, session: string, code: string): Promise<void> {
-  const data = await cognitoPost("RespondToAuthChallenge", {
-    ChallengeName: "CUSTOM_CHALLENGE",
-    ClientId: CLIENT_ID,
-    Session: session,
-    ChallengeResponses: { USERNAME: email, ANSWER: code },
+export async function verifyOtp(code: string): Promise<AuthTokens> {
+  if (!_otpUser) throw new Error("No active OTP session");
+
+  return new Promise((resolve, reject) => {
+    _otpUser?.sendCustomChallengeAnswer(code, {
+      onSuccess: (result) => {
+        _otpUser = null;
+        resolve({
+          accessToken: result.getAccessToken().getJwtToken(),
+          idToken: result.getIdToken().getJwtToken(),
+          refreshToken: result.getRefreshToken().getToken(),
+        });
+      },
+      onFailure: (err) => {
+        _otpUser = null;
+        reject(new Error(err.message ?? "Invalid or expired code"));
+      },
+      customChallenge: () => reject(new Error("Invalid code, please try again")),
+    });
   });
-  const result = data.AuthenticationResult as AuthResult;
-  await persistSession(result.AccessToken, result.IdToken, result.RefreshToken);
 }
 
-export async function loginWithPassword(email: string, password: string): Promise<void> {
-  const pool = new CognitoUserPool({ UserPoolId: USER_POOL_ID, ClientId: CLIENT_ID });
-  const user = new CognitoUser({ Username: email, Pool: pool });
-  const authDetails = new AuthenticationDetails({ Username: email, Password: password });
+export async function loginWithPassword(email: string, password: string): Promise<AuthTokens> {
+  const user = new CognitoUser({ Username: email, Pool: makePool() });
 
-  await new Promise<void>((resolve, reject) => {
-    user.authenticateUser(authDetails, {
-      onSuccess: async (result) => {
-        try {
-          await persistSession(
-            result.getAccessToken().getJwtToken(),
-            result.getIdToken().getJwtToken(),
-            result.getRefreshToken().getToken(),
-          );
-          resolve();
-        } catch (err) {
-          reject(err);
-        }
+  return new Promise<AuthTokens>((resolve, reject) => {
+    user.authenticateUser(new AuthenticationDetails({ Username: email, Password: password }), {
+      onSuccess: (result) => {
+        resolve({
+          accessToken: result.getAccessToken().getJwtToken(),
+          idToken: result.getIdToken().getJwtToken(),
+          refreshToken: result.getRefreshToken().getToken(),
+        });
       },
       onFailure: (err) => reject(new Error(err.message ?? "Authentication failed")),
     });

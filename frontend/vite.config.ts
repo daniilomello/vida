@@ -5,6 +5,12 @@ import { defineConfig } from "vite";
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  define: {
+    global: "globalThis",
+  },
+  optimizeDeps: {
+    include: ["amazon-cognito-identity-js"],
+  },
   resolve: {
     alias: {
       "@": resolve(__dirname, "./src"),
