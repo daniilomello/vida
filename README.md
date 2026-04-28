@@ -4,7 +4,7 @@ A serverless Progressive Web App for tracking daily expenses, recurring bills, a
 
 ## Tech Stack
 
-![Stack](https://skills.syvixor.com/api/icons?i=typescript,reactjs,vitejs,tailwindcss,nodejs,aws,dynamodb,jest,vitest,githubactions)
+![Stack](https://skills.syvixor.com/api/icons?i=claudeai,typescript,reactjs,vitejs,tailwindcss,nodejs,aws,,vitest,githubactions)
 
 | Layer | Technologies |
 |---|---|
