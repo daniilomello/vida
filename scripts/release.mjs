@@ -79,9 +79,16 @@ function tagRelease() {
   }
 
   run("git pull origin main");
+
   console.log(`\nTagging ${version} on main…`);
   run(`git tag ${version}`);
   run(`git push origin ${version}`);
+
+  console.log("\nSyncing develop with main…");
+  run("git checkout develop");
+  run("git merge origin/main");
+  run("git push origin develop");
+
   console.log(`\nDone. GitHub Actions will create the ${version} release automatically.`);
 }
 
