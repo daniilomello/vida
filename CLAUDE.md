@@ -106,30 +106,34 @@ Releases follow **semantic versioning** (`vMAJOR.MINOR.PATCH`):
 
 ### Automated release (preferred)
 
-Two npm scripts handle the full flow from `scripts/release.mjs`:
+A single command handles the full flow from `scripts/release.mjs`:
 
 ```bash
-# Step 1 — on develop, open a release PR targeting main
+# On develop, with a clean working tree:
+npm run release -- v1.2.3
+```
+
+This does everything end-to-end:
+1. Pushes `develop` to origin
+2. Opens a PR from `develop` → `main` titled `release: vX.Y.Z`
+3. Merges the PR immediately
+4. Checks out `main`, pulls, and creates + pushes the `vX.Y.Z` tag
+5. Checks out `develop`, merges `main` back in, and pushes (keeps develop in sync)
+
+GitHub Actions (`release.yml`) then automatically creates a GitHub Release with notes compiled from all merged PRs since the previous tag. The deploy pipeline also fires and ships to production.
+
+### Manual escape hatches
+
+If you need to split the steps (e.g. wait for CI before merging):
+
+```bash
+# Step 1 — on develop, open the PR only
 npm run release:pr -- v1.2.3
 
-# Step 2 — after the PR is merged, tag main (triggers GitHub Release)
+# Step 2 — after the PR is merged, tag main
 git checkout main && git pull
 npm run release:tag -- v1.2.3
 ```
-
-`release:pr` validates you are on `develop` with a clean working tree, pushes the branch, and opens a PR titled `release: vX.Y.Z` targeting `main`.
-
-`release:tag` validates you are on `main`, creates the annotated tag, and pushes it. GitHub Actions (`release.yml`) then automatically creates a GitHub Release with notes compiled from all merged PRs since the previous tag.
-
-### Manual steps (reference)
-
-1. Merge `develop` → `main` via a PR titled `release: vX.Y.Z`
-2. After merge:
-   ```bash
-   git checkout main && git pull
-   git tag vX.Y.Z && git push origin vX.Y.Z
-   ```
-3. GitHub Actions creates the release automatically.
 
 ## Local Development
 Run both services concurrently from the root:
