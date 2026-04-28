@@ -1,0 +1,74 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - frontend/**
+      - backend/**
+      - .github/workflows/frontend-deploy.yml
+
+jobs:
+  deploy:
+    name: Deploy to ${{ github.ref_name == 'main' && 'production' || 'staging' }}
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
+    env:
+      STAGE: ${{ github.ref_name == 'main' && 'prod' || 'staging' }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: rm -f package-lock.json && npm install
+
+      - name: Build frontend
+        run: npm run build -w frontend
+        env:
+          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+          VITE_COGNITO_REGION: ${{ secrets.VITE_COGNITO_REGION }}
+          VITE_COGNITO_USER_POOL_ID: ${{ secrets.VITE_COGNITO_USER_POOL_ID }}
+          VITE_COGNITO_CLIENT_ID: ${{ secrets.VITE_COGNITO_CLIENT_ID }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Deploy backend
+        id: backend
+        working-directory: backend
+        run: |
+          npx serverless deploy --stage $STAGE 2>&1 | tee /tmp/deploy-output.txt
+          ENDPOINT=$(grep -o 'https://[^[:space:]]*.amazonaws.com[^[:space:]]*' /tmp/deploy-output.txt | head -1 | sed 's|/[^/]*$||')
+          echo "endpoint=$ENDPOINT" >> $GITHUB_OUTPUT
+        env:
+          FRONTEND_ORIGIN: ${{ secrets.FRONTEND_ORIGIN }}
+          SES_DOMAIN: ${{ secrets.SES_DOMAIN }}
+          SES_FROM_EMAIL: ${{ secrets.SES_FROM_EMAIL }}
+
+      - name: Sync frontend to S3
+        run: aws s3 sync frontend/dist/ s3://${{ secrets.S3_BUCKET_NAME }} --delete
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
+            --paths "/*"
+
+      - name: Post deployment summary
+        run: |
+          echo "## Deployment complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| | URL |" >> $GITHUB_STEP_SUMMARY
+          echo "|---|---|" >> $GITHUB_STEP_SUMMARY
+          echo "| **Frontend** | ${{ secrets.FRONTEND_ORIGIN }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Backend health** | ${{ steps.backend.outputs.endpoint }}/api/v1/health |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Stage** | \`$STAGE\` |" >> $GITHUB_STEP_SUMMARY

@@ -1,0 +1,44 @@
+name: Frontend CI
+
+on:
+  pull_request:
+    branches: [develop, main]
+    paths:
+      - "frontend/**"
+      - ".github/workflows/frontend-ci.yml"
+
+jobs:
+  ci:
+    name: Lint, Test & Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: |
+            package.json
+            frontend/package.json
+
+      - name: Install dependencies
+        run: rm -f package-lock.json && npm install
+
+      - name: Lint & format check
+        working-directory: frontend
+        run: npm run check
+
+      - name: Run tests
+        working-directory: frontend
+        run: npm run test
+
+      - name: Build
+        working-directory: frontend
+        run: npm run build
+        env:
+          VITE_API_BASE_URL: https://api.placeholder.com
+          VITE_COGNITO_REGION: us-east-1
+          VITE_COGNITO_USER_POOL_ID: placeholder
+          VITE_COGNITO_CLIENT_ID: placeholder

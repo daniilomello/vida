@@ -1,3 +1,6 @@
+backend/.esbuild
+frontend/.vite
+
 # Dependencies
 node_modules/
 .pnp

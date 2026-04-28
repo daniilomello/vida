@@ -1,0 +1,17 @@
+{
+  "name": "vida",
+  "private": true,
+  "workspaces": ["frontend", "backend"],
+  "scripts": {
+    "dev": "concurrently -n frontend,backend -c cyan,yellow \"npm run dev -w frontend\" \"npm run dev -w backend\"",
+    "check": "biome check .",
+    "check:fix": "biome check --apply .",
+    "release:pr": "node scripts/release.mjs pr",
+    "release:tag": "node scripts/release.mjs tag"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "concurrently": "^9.1.2",
+    "typescript": "^5.7.3"
+  }
+}
