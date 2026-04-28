@@ -9,7 +9,7 @@ import { Toaster } from "sonner";
 export function App() {
   return (
     <>
-      <Toaster position="top-center" richColors />
+      <Toaster position="top-center" richColors theme="dark" />
       <Routes>
         <Route
           path="/login"
@@ -49,8 +49,8 @@ function GuestRoute({ children }: { children: ReactNode }) {
 
 function HomePage() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gray-50">
-      <h1 className="text-2xl font-bold text-gray-900">Vida</h1>
+    <main className="flex min-h-screen items-center justify-center bg-gray-950">
+      <h1 className="text-2xl font-bold text-white">Vida</h1>
     </main>
   );
 }

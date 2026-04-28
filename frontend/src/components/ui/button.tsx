@@ -14,11 +14,12 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={disabled || loading}
         className={cn(
           "inline-flex h-10 items-center justify-center rounded-md px-4 text-sm font-medium transition-colors",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950",
           "disabled:pointer-events-none disabled:opacity-50",
-          variant === "default" && "bg-black text-white hover:bg-gray-800",
-          variant === "outline" && "border border-gray-300 bg-white text-black hover:bg-gray-50",
-          variant === "ghost" && "text-black hover:bg-gray-100",
+          variant === "default" && "bg-white text-gray-950 hover:bg-gray-200",
+          variant === "outline" &&
+            "border border-gray-700 bg-transparent text-white hover:bg-gray-800",
+          variant === "ghost" && "text-white hover:bg-gray-800",
           className,
         )}
         {...props}
