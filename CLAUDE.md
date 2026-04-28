@@ -98,17 +98,38 @@ Git Flow: work from `develop`, PRs target `develop`, releases merge to `main`.
 Never push directly to `main`.
 
 ## Release Process
-Releases follow semantic versioning (`vMAJOR.MINOR.PATCH`). To cut a release:
+
+Releases follow **semantic versioning** (`vMAJOR.MINOR.PATCH`):
+- `PATCH` — bug fixes and minor improvements (e.g. `v1.0.1`)
+- `MINOR` — new features, backwards-compatible (e.g. `v1.1.0`)
+- `MAJOR` — breaking changes or significant milestones (e.g. `v2.0.0`)
+
+### Automated release (preferred)
+
+Two npm scripts handle the full flow from `scripts/release.mjs`:
+
+```bash
+# Step 1 — on develop, open a release PR targeting main
+npm run release:pr -- v1.2.3
+
+# Step 2 — after the PR is merged, tag main (triggers GitHub Release)
+git checkout main && git pull
+npm run release:tag -- v1.2.3
+```
+
+`release:pr` validates you are on `develop` with a clean working tree, pushes the branch, and opens a PR titled `release: vX.Y.Z` targeting `main`.
+
+`release:tag` validates you are on `main`, creates the annotated tag, and pushes it. GitHub Actions (`release.yml`) then automatically creates a GitHub Release with notes compiled from all merged PRs since the previous tag.
+
+### Manual steps (reference)
 
 1. Merge `develop` → `main` via a PR titled `release: vX.Y.Z`
-2. After the PR merges, tag `main`:
+2. After merge:
    ```bash
    git checkout main && git pull
    git tag vX.Y.Z && git push origin vX.Y.Z
    ```
-3. GitHub Actions (`release.yml`) automatically creates a GitHub Release with auto-generated release notes compiled from merged PRs since the last tag.
-
-**Version guidance:** bump `PATCH` for fixes, `MINOR` for new features, `MAJOR` for breaking changes.
+3. GitHub Actions creates the release automatically.
 
 ## Local Development
 Run both services concurrently from the root:
