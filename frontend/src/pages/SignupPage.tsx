@@ -1,11 +1,11 @@
+import { useState } from "react";
+import { Link, useNavigate } from "react-router";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { confirmSignup, loginWithPassword, signUp, signUpOtp } from "@/lib/cognito";
 import { useAuthStore } from "@/store/auth.store";
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 
 type Tab = "password" | "otp";
 type Step = "form" | "verify" | "login-otp";
