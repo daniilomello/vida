@@ -3,7 +3,6 @@ const config = {
   preset: "ts-jest",
   testEnvironment: "node",
   testPathIgnorePatterns: ["/node_modules/", "/.serverless/"],
-  passWithNoTests: true,
   transform: {
     "^.+\\.tsx?$": [
       "ts-jest",
