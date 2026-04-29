@@ -25,7 +25,7 @@ const validTokens = {
 };
 
 describe("createSession", () => {
-  it("returns 200 and sets three httpOnly cookies on valid input", async () => {
+  it("should set three httpOnly cookies and return 200 on valid input", async () => {
     const result = await handler(makeEvent(validTokens), {} as never, () => {});
     const res = result as Exclude<typeof result, void>;
 
@@ -48,7 +48,7 @@ describe("createSession", () => {
     expect(refreshCookie).toContain("Max-Age=2592000");
   });
 
-  it("returns 400 when a token is missing", async () => {
+  it("should return 400 when a token is missing", async () => {
     const result = await handler(
       makeEvent({ accessToken: "x", idToken: "y" }),
       {} as never,
@@ -60,7 +60,7 @@ describe("createSession", () => {
     expect(JSON.parse(res.body).error.code).toBe("VALIDATION_ERROR");
   });
 
-  it("returns 400 when body is not valid JSON", async () => {
+  it("should return 400 when body is not valid JSON", async () => {
     const event = makeEvent(null);
     event.body = "not-json";
 
@@ -71,7 +71,7 @@ describe("createSession", () => {
     expect(JSON.parse(res.body).error.code).toBe("INVALID_JSON");
   });
 
-  it("returns 400 when body is empty", async () => {
+  it("should return 400 when body is empty", async () => {
     const event = makeEvent(null);
     event.body = null;
 
