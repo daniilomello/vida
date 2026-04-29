@@ -51,7 +51,9 @@
       "Bash(npx husky *)",
       "Bash(npx commitlint *)",
       "Bash(echo \"exit: $?\")",
-      "Bash(git *)"
+      "Bash(git *)",
+      "Bash(npm outdated *)",
+      "Bash(xargs -I{} sh -c 'echo \"=== {} ===\" && cat \"{}\"')"
     ]
   }
 }
