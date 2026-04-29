@@ -1,18 +1,10 @@
 import type { APIGatewayProxyHandler } from "aws-lambda";
+import { ONE_HOUR, setCookie, THIRTY_DAYS } from "../../lib/cookies";
 
 interface SessionBody {
   accessToken: string;
   idToken: string;
   refreshToken: string;
-}
-
-const ONE_HOUR = 60 * 60;
-const THIRTY_DAYS = 30 * 24 * 60 * 60;
-
-function cookie(name: string, value: string, maxAge: number): string {
-  const parts = [`${name}=${value}`, "HttpOnly", "SameSite=Strict", "Path=/", `Max-Age=${maxAge}`];
-  if (process.env.STAGE !== "local") parts.push("Secure");
-  return parts.join("; ");
 }
 
 export const handler: APIGatewayProxyHandler = async (event) => {
@@ -48,9 +40,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     headers: { "Content-Type": "application/json" },
     multiValueHeaders: {
       "Set-Cookie": [
-        cookie("idToken", idToken, ONE_HOUR),
-        cookie("accessToken", accessToken, ONE_HOUR),
-        cookie("refreshToken", refreshToken, THIRTY_DAYS),
+        setCookie("idToken", idToken, ONE_HOUR),
+        setCookie("accessToken", accessToken, ONE_HOUR),
+        setCookie("refreshToken", refreshToken, THIRTY_DAYS),
       ],
     },
     body: JSON.stringify({ message: "Session created" }),

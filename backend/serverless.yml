@@ -13,6 +13,8 @@ provider:
     FRONTEND_ORIGIN: ${env:FRONTEND_ORIGIN, 'http://localhost:5173'}
     DYNAMODB_TABLE: FinanceApp-Data-${self:provider.stage}
     SES_FROM_EMAIL: ${env:SES_FROM_EMAIL, 'noreply@vida.app'}
+    COGNITO_USER_POOL_ID: ${env:COGNITO_USER_POOL_ID, ''}
+    COGNITO_CLIENT_ID: ${env:COGNITO_CLIENT_ID, ''}
 
   # Rate limiting: 100 req/s burst, 50 req/s steady-state (spec section 3.4).
   # Note: usagePlan throttle is enforced per API key. This app uses cookie-based
@@ -81,6 +83,9 @@ functions:
           method: get
           cors: *cors
 
+  lambdaAuthorizer:
+    handler: src/handlers/auth/authorizer.handler
+
   createSession:
     handler: src/handlers/auth/create-session.handler
     events:
@@ -88,6 +93,27 @@ functions:
           path: api/v1/auth/session
           method: post
           cors: *cors
+
+  refreshSession:
+    handler: src/handlers/auth/refresh-session.handler
+    events:
+      - http:
+          path: api/v1/auth/refresh
+          method: post
+          cors: *cors
+
+  deleteSession:
+    handler: src/handlers/auth/delete-session.handler
+    events:
+      - http:
+          path: api/v1/auth/session
+          method: delete
+          cors: *cors
+          authorizer:
+            name: lambdaAuthorizer
+            resultTtlInSeconds: 300
+            identitySource: method.request.header.Cookie
+            type: request
 
   defineAuthChallenge:
     handler: src/handlers/auth/defineAuthChallenge.handler
