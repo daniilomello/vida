@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { initiateOtp, loginWithPassword, verifyOtp } from "@/lib/cognito";
+import { createSession } from "@/services/auth-service";
 import { useAuthStore } from "@/store/auth.store";
 
 type Tab = "password" | "otp";
@@ -62,7 +63,8 @@ function PasswordForm() {
     setLoading(true);
     try {
       const tokens = await loginWithPassword(email, password);
-      setAuthenticated(tokens);
+      await createSession(tokens);
+      setAuthenticated();
       navigate("/");
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Sign in failed");
@@ -145,7 +147,8 @@ function OtpForm() {
     setLoading(true);
     try {
       const tokens = await verifyOtp(code);
-      setAuthenticated(tokens);
+      await createSession(tokens);
+      setAuthenticated();
       navigate("/");
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Invalid or expired code");

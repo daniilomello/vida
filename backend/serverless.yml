@@ -81,6 +81,14 @@ functions:
           method: get
           cors: *cors
 
+  createSession:
+    handler: src/handlers/auth/create-session.handler
+    events:
+      - http:
+          path: api/v1/auth/session
+          method: post
+          cors: *cors
+
   defineAuthChallenge:
     handler: src/handlers/auth/defineAuthChallenge.handler
 

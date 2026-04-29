@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { confirmSignup, loginWithPassword, signUp, signUpOtp } from "@/lib/cognito";
+import { createSession } from "@/services/auth-service";
 import { useAuthStore } from "@/store/auth.store";
 
 type Tab = "password" | "otp";
@@ -83,7 +84,8 @@ function PasswordSignupForm() {
     try {
       await confirmSignup(email, code);
       const tokens = await loginWithPassword(email, password);
-      setAuthenticated(tokens);
+      await createSession(tokens);
+      setAuthenticated();
       navigate("/");
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Verification failed");
@@ -204,7 +206,8 @@ function OtpSignupForm() {
     try {
       await confirmSignup(email, code);
       const tokens = await loginWithPassword(email, tempPassword);
-      setAuthenticated(tokens);
+      await createSession(tokens);
+      setAuthenticated();
       navigate("/");
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Verification failed");
