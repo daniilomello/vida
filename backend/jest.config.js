@@ -5,7 +5,15 @@ const config = {
   testPathIgnorePatterns: ["/node_modules/", "/.serverless/"],
   passWithNoTests: true,
   transform: {
-    "^.+\\.tsx?$": ["ts-jest", { tsconfig: "./tsconfig.json" }],
+    "^.+\\.tsx?$": [
+      "ts-jest",
+      {
+        tsconfig: "./tsconfig.json",
+        // Type-checking is tsc's job; ts-jest only transpiles.
+        // Disabling diagnostics also fixes @types resolution across monorepo roots.
+        diagnostics: false,
+      },
+    ],
   },
 };
 
