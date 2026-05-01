@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
+import Logo from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,14 +16,14 @@ export function SignupPage() {
   const [tab, setTab] = useState<Tab>("password");
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gray-950 px-4">
+    <main className="flex min-h-screen items-center justify-center px-4">
       <div className="w-full max-w-sm">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold tracking-tight text-white">Vida</h1>
-          <p className="mt-1 text-sm text-gray-400">Create your account</p>
+        <div className="mb-8 text-center flex flex-col items-center justify-center">
+          <Logo />
+          <p className="mt-1 text-sm text-muted-foreground">Create your account</p>
         </div>
 
-        <div className="mb-6 flex border-b border-gray-800">
+        <div className="mb-6 flex border-b border-border">
           {(["password", "otp"] as Tab[]).map((t) => (
             <button
               key={t}
@@ -30,7 +31,9 @@ export function SignupPage() {
               onClick={() => setTab(t)}
               className={[
                 "mr-6 pb-2 text-sm font-medium transition-colors",
-                tab === t ? "border-b-2 border-white text-white" : "text-gray-500 hover:text-white",
+                tab === t
+                  ? "border-b-2 border-primary text-primary"
+                  : "text-muted-foreground hover:text-foreground",
               ].join(" ")}
             >
               {t === "password" ? "Password" : "One-Time Code"}
@@ -40,9 +43,9 @@ export function SignupPage() {
 
         {tab === "password" ? <PasswordSignupForm /> : <OtpSignupForm />}
 
-        <p className="mt-6 text-center text-sm text-gray-400">
+        <p className="mt-6 text-center text-sm text-muted-foreground">
           Already have an account?{" "}
-          <Link to="/login" className="font-medium text-white hover:underline">
+          <Link to="/login" className="font-medium text-primary hover:underline">
             Sign in
           </Link>
         </p>
@@ -97,8 +100,8 @@ function PasswordSignupForm() {
   if (step === "verify") {
     return (
       <form onSubmit={handleVerify} className="space-y-4">
-        <p className="text-sm text-gray-400">
-          Verification code sent to <span className="font-medium text-white">{email}</span>
+        <p className="text-sm text-muted-foreground">
+          Verification code sent to <span className="font-medium text-foreground">{email}</span>
         </p>
         <div className="space-y-1.5">
           <Label htmlFor="verify-code">6-digit code</Label>
@@ -124,7 +127,7 @@ function PasswordSignupForm() {
             setStep("form");
             setCode("");
           }}
-          className="w-full text-sm text-gray-500 hover:text-white"
+          className="w-full text-sm text-muted-foreground hover:text-foreground"
         >
           Use a different email
         </button>
@@ -219,8 +222,8 @@ function OtpSignupForm() {
   if (step === "verify") {
     return (
       <form onSubmit={handleVerify} className="space-y-4">
-        <p className="text-sm text-gray-400">
-          Verification code sent to <span className="font-medium text-white">{email}</span>
+        <p className="text-sm text-muted-foreground">
+          Verification code sent to <span className="font-medium text-foreground">{email}</span>
         </p>
         <div className="space-y-1.5">
           <Label htmlFor="otp-verify-code">6-digit code</Label>
@@ -246,7 +249,7 @@ function OtpSignupForm() {
             setStep("form");
             setCode("");
           }}
-          className="w-full text-sm text-gray-500 hover:text-white"
+          className="w-full text-sm text-muted-foreground hover:text-foreground"
         >
           Use a different email
         </button>
@@ -268,7 +271,7 @@ function OtpSignupForm() {
           placeholder="you@example.com"
         />
       </div>
-      <p className="text-xs text-gray-500">
+      <p className="text-xs text-muted-foreground">
         No password needed — you'll always sign in with a code sent to your email.
       </p>
       <Button type="submit" className="w-full" loading={loading}>

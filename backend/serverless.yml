@@ -47,14 +47,16 @@ provider:
             - !Sub "arn:aws:ses:${AWS::Region}:${AWS::AccountId}:identity/${env:SES_DOMAIN, 'vida.app'}"
             - !Sub "arn:aws:ses:${AWS::Region}:${AWS::AccountId}:configuration-set/*"
 
+package:
+  individually: true
+
 build:
   esbuild:
     bundle: true
-    minify: false
-    sourcemap:
-      type: linked
-      setNodeOptions: true
-    buildConcurrency: 10
+    minify: true
+    sourcemap: false
+    exclude:
+      - '@aws-sdk/*'
 
 plugins:
   - serverless-offline

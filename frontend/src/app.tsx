@@ -58,7 +58,7 @@ function GuestRoute({ children }: { children: ReactNode }) {
 
 function HomePage() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gray-950">
+    <main className="flex min-h-screen items-center justify-center">
       <h1 className="text-2xl font-bold text-white">Vida</h1>
     </main>
   );

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
+import Logo from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,10 +14,10 @@ export function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gray-950 px-4">
+    <main className="flex min-h-screen items-center justify-center px-4">
       <div className="w-full max-w-sm">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold tracking-tight text-white">Vida</h1>
+        <div className="mb-8 text-center flex flex-col items-center justify-center">
+          <Logo />
           <p className="mt-1 text-sm text-gray-400">Reset your password</p>
         </div>
 
