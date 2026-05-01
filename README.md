@@ -6,7 +6,7 @@ This repo is an **npm workspaces** monorepo: `frontend/` (Vite SPA) and `backend
 
 ## Tech Stack
 
-![Stack](https://skills.syvixor.com/api/icons?i=claudeai,reactjs,vitejs,vitest,tailwindcss,nodejs,aws,,vitest,githubactions,typescript)
+![Stack](https://skills.syvixor.com/api/icons?i=claudeai,reactjs,vitejs,nodejs,aws,githubactions,typescript)
 
 | Layer | Technologies |
 |---|---|
