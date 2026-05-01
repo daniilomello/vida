@@ -102,6 +102,11 @@ function PasswordForm() {
       <Button type="submit" className="w-full" loading={loading}>
         Sign in
       </Button>
+      <div className="text-right">
+        <Link to="/forgot-password" className="text-sm text-gray-400 hover:text-white">
+          Forgot password?
+        </Link>
+      </div>
     </form>
   );
 }

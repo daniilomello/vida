@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { Navigate, Route, Routes } from "react-router";
 import { Toaster } from "sonner";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { ForgotPasswordPage } from "@/pages/ForgotPasswordPage";
 import { LoginPage } from "@/pages/LoginPage";
 import { SignupPage } from "@/pages/SignupPage";
 import { useAuthStore } from "@/store/auth.store";
@@ -24,6 +25,14 @@ export function App() {
           element={
             <GuestRoute>
               <SignupPage />
+            </GuestRoute>
+          }
+        />
+        <Route
+          path="/forgot-password"
+          element={
+            <GuestRoute>
+              <ForgotPasswordPage />
             </GuestRoute>
           }
         />

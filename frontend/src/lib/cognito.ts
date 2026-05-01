@@ -86,6 +86,31 @@ export async function verifyOtp(code: string): Promise<AuthTokens> {
   });
 }
 
+export async function forgotPassword(email: string): Promise<void> {
+  const user = new CognitoUser({ Username: email, Pool: makePool() });
+  return new Promise((resolve, reject) => {
+    user.forgotPassword({
+      onSuccess: () => resolve(),
+      onFailure: (err) => reject(new Error(err.message ?? "Failed to send reset code")),
+      inputVerificationCode: () => resolve(),
+    });
+  });
+}
+
+export async function confirmForgotPassword(
+  email: string,
+  code: string,
+  newPassword: string,
+): Promise<void> {
+  const user = new CognitoUser({ Username: email, Pool: makePool() });
+  return new Promise((resolve, reject) => {
+    user.confirmPassword(code, newPassword, {
+      onSuccess: () => resolve(),
+      onFailure: (err) => reject(new Error(err.message ?? "Failed to reset password")),
+    });
+  });
+}
+
 export async function loginWithPassword(email: string, password: string): Promise<AuthTokens> {
   const user = new CognitoUser({ Username: email, Pool: makePool() });
 
