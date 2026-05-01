@@ -45,7 +45,7 @@ cd /Users/danilo/www/vida && npm run release -- $ARGUMENTS
 ```
 
 This script (`scripts/release.mjs`) handles everything end-to-end:
-1. Pushes `develop` to origin
+1. Bumps `version` in `package.json`, `frontend/package.json`, and `backend/package.json`, commits, then pushes `develop`
 2. Opens a PR from `develop` → `main` titled `release: $ARGUMENTS`
 3. Merges the PR immediately
 4. Checks out `main`, pulls, creates + pushes the `$ARGUMENTS` tag

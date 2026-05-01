@@ -9,6 +9,8 @@
  */
 
 import { execSync } from "node:child_process";
+import { readFileSync, writeFileSync } from "node:fs";
+import { resolve } from "node:path";
 
 const [, , command, version] = process.argv;
 
@@ -40,6 +42,26 @@ function tagExists(tag) {
   return capture("git tag -l").split("\n").includes(tag);
 }
 
+function bumpVersions() {
+  const semver = version.replace(/^v/, "");
+  const root = import.meta.dirname ? resolve(import.meta.dirname, "..") : ".";
+  const manifests = [
+    resolve(root, "package.json"),
+    resolve(root, "frontend/package.json"),
+    resolve(root, "backend/package.json"),
+  ];
+
+  for (const file of manifests) {
+    const pkg = JSON.parse(readFileSync(file, "utf8"));
+    pkg.version = semver;
+    writeFileSync(file, `${JSON.stringify(pkg, null, 2)}\n`, "utf8");
+  }
+
+  run(`git add ${manifests.map((f) => `"${f}"`).join(" ")}`);
+  run(`git commit -m "chore(release): bump version to ${semver}"`);
+  console.log(`  Updated package.json versions to ${semver}`);
+}
+
 // ─── release:pr ──────────────────────────────────────────────────────────────
 
 function createReleasePR() {
@@ -51,6 +73,9 @@ function createReleasePR() {
     console.error("Error: working tree has uncommitted changes.");
     process.exit(1);
   }
+
+  console.log(`\nBumping package.json versions to ${version}…`);
+  bumpVersions();
 
   console.log("\nPushing develop…");
   run("git push origin develop");
@@ -108,8 +133,9 @@ function fullRelease() {
     process.exit(1);
   }
 
-  // 1. Push develop
-  console.log("\n[1/5] Pushing develop…");
+  // 1. Bump versions + push develop
+  console.log(`\n[1/5] Bumping package.json versions to ${version} and pushing develop…`);
+  bumpVersions();
   run("git push origin develop");
 
   // 2. Open and immediately merge the release PR
