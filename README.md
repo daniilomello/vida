@@ -1,17 +1,23 @@
+<figure align="center">
+    <img alt="Project Cover" src=".github/cover.png" />
+</figure>
+
 # Vida — Personal Finance PWA
 
 A serverless Progressive Web App for tracking daily expenses, recurring bills, and credit card usage. Built for single-user, frictionless financial visibility without bank integrations.
 
+This repo is an **npm workspaces** monorepo: `frontend/` (Vite SPA) and `backend/` (Serverless Framework on AWS).
+
 ## Tech Stack
 
-![Stack](https://skills.syvixor.com/api/icons?i=claudeai,reactjs,vitejs,tailwindcss,nodejs,aws,,vitest,githubactions,typescript)
+![Stack](https://skills.syvixor.com/api/icons?i=claudeai,reactjs,vitejs,nodejs,aws,githubactions,typescript)
 
 | Layer | Technologies |
 |---|---|
-| **Frontend** | React 18, Vite, TypeScript, Tailwind CSS v4, React Router v6, Zustand |
-| **Backend** | AWS Lambda (Node.js 20), API Gateway, TypeScript |
+| **Frontend** | React 19, Vite, TypeScript, Tailwind CSS v4, React Router v7, Zustand; |
+| **Backend** | AWS Lambda, API Gateway, TypeScript, Middy |
 | **Database** | DynamoDB (single-table design) |
-| **Auth** | Amazon Cognito — email+password and email OTP (passwordless) |
+| **Auth** | Amazon Cognito (with email OTP) |
 | **Messaging** | Amazon SES (OTP delivery), EventBridge (monthly bill generation cron) |
 | **IaC** | Serverless Framework v4 |
 | **Lint/Format** | Biome |
@@ -29,20 +35,26 @@ A serverless Progressive Web App for tracking daily expenses, recurring bills, a
 ## Local Development
 
 ```bash
-# 1. Install dependencies
+# 1. Install dependencies (workspaces)
 npm install
 
 # 2. Copy env files
 cp frontend/.env.example frontend/.env
 cp backend/.env.example backend/.env
+```
 
+Fill **frontend** `.env` with `VITE_API_BASE_URL` (e.g. `http://localhost:3000` for serverless-offline) and Cognito identifiers for client-side auth. Fill **backend** `.env` with AWS credentials (if calling real AWS), `FRONTEND_ORIGIN`, and Cognito/SES variables when exercising OTP or deployed resources locally — see `backend/.env.example`.
+
+```bash
 # 3. Start both services concurrently
 npm run dev
 ```
 
-- Frontend: http://localhost:5173
-- Backend: http://localhost:3000
+- Frontend: http://localhost:5173  
+- Backend (serverless-offline): http://localhost:3000  
 - Health check: `GET http://localhost:3000/api/v1/health`
+
+Root scripts: `npm run dev` (both apps), `npm run check` / `npm run check:fix` (Biome across the repo).
 
 ## Documentation
 
@@ -50,6 +62,7 @@ npm run dev
 - [Technical Specification](docs/spec.md)
 - [Code Standards](docs/standards.md)
 - [API Collection (Yaak/Postman)](docs/yaak.json)
+- [CLAUDE.md](CLAUDE.md) — contributor workflow, pre-PR checks, GitHub/project conventions, release process
 
 ## Claude Code Skills
 
@@ -67,6 +80,7 @@ This project includes custom Claude Code slash commands in `.claude/commands/` t
 ## Branching
 
 This project follows [Git Flow](docs/standards.md#5-git-flow):
+
 - Work from `develop`, open PRs targeting `develop`
 - Releases merge `develop` → `main` via `npm run release`
 - Never push directly to `main`

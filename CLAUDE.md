@@ -114,7 +114,7 @@ npm run release -- v1.2.3
 ```
 
 This does everything end-to-end:
-1. Pushes `develop` to origin
+1. Bumps `version` in `package.json`, `frontend/package.json`, and `backend/package.json` to `X.Y.Z`, commits the change, then pushes `develop`
 2. Opens a PR from `develop` → `main` titled `release: vX.Y.Z`
 3. Merges the PR immediately
 4. Checks out `main`, pulls, and creates + pushes the `vX.Y.Z` tag
