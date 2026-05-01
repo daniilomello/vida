@@ -6,7 +6,8 @@
     "moduleResolution": "Node10",
     "outDir": ".build",
     "rootDir": "src",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "types": ["node", "jest"]
   },
   "include": ["src"],
   "exclude": ["node_modules", ".build", ".serverless"]

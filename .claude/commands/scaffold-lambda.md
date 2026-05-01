@@ -85,7 +85,7 @@ Create `backend/src/handlers/<subfolder>/<kebab-name>.test.ts`:
 import { handler } from "./<kebab-name>";
 
 describe("<HandlerName>", () => {
-  it("returns 401 when userId is missing", async () => {
+  it("should return 401 when userId is missing", async () => {
     const event = {
       requestContext: { authorizer: {} },
       body: null,
@@ -97,7 +97,7 @@ describe("<HandlerName>", () => {
     expect((result as any).statusCode).toBe(401);
   });
 
-  it("returns 200 on success", async () => {
+  it("should return 200 on success", async () => {
     // TODO: mock DynamoDB and assert happy path
   });
 });
