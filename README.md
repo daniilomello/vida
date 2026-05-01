@@ -1,3 +1,7 @@
+<figure align="center">
+    <img alt="Project Cover" src=".github/cover.png" />
+</figure>
+
 # Vida — Personal Finance PWA
 
 A serverless Progressive Web App for tracking daily expenses, recurring bills, and credit card usage. Built for single-user, frictionless financial visibility without bank integrations.
