@@ -1,0 +1,43 @@
+name: aws
+runtime: nodejs20.x
+region: ${env:AWS_REGION, 'us-east-1'}
+stage: ${opt:stage, 'local'}
+
+environment:
+  STAGE: ${self:provider.stage}
+  FRONTEND_ORIGIN: ${env:FRONTEND_ORIGIN, 'http://localhost:5173'}
+  DYNAMODB_TABLE: FinanceApp-Data-${self:provider.stage}
+  SES_FROM_EMAIL: ${env:SES_FROM_EMAIL, 'noreply@vida.app'}
+  COGNITO_USER_POOL_ID: ${env:COGNITO_USER_POOL_ID, ''}
+  COGNITO_CLIENT_ID: ${env:COGNITO_CLIENT_ID, ''}
+
+# Rate limiting: 100 req/s burst, 50 req/s steady-state (spec section 3.4).
+# Note: usagePlan throttle is enforced per API key. This app uses cookie-based
+# Cognito auth (not API keys), so this provisions the usage plan infra as specified.
+# True stage-level throttle for all traffic requires a custom CF MethodSettings resource.
+apiGateway:
+  usagePlan:
+    throttle:
+      burstLimit: 100
+      rateLimit: 50
+
+iam:
+  role:
+    statements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+          - dynamodb:GetItem
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+          - dynamodb:DeleteItem
+        Resource:
+          - !GetAtt FinanceAppTable.Arn
+          - !Sub "${FinanceAppTable.Arn}/index/GSI-Type"
+      - Effect: Allow
+        Action:
+          - ses:SendEmail
+          - ses:SendRawEmail
+        Resource:
+          - !Sub "arn:aws:ses:${AWS::Region}:${AWS::AccountId}:identity/${env:SES_DOMAIN, 'vida.app'}"
+          - !Sub "arn:aws:ses:${AWS::Region}:${AWS::AccountId}:configuration-set/*"

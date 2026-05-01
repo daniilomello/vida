@@ -1,19 +1,17 @@
 /** @type {import('jest').Config} */
-const config = {
+module.exports = {
   preset: "ts-jest",
   testEnvironment: "node",
+  setupFiles: ["<rootDir>/jest.setup.cjs"],
+  modulePathIgnorePatterns: ["<rootDir>/.serverless/"],
   testPathIgnorePatterns: ["/node_modules/", "/.serverless/"],
   transform: {
     "^.+\\.tsx?$": [
       "ts-jest",
       {
-        tsconfig: "./tsconfig.json",
-        // Type-checking is tsc's job; ts-jest only transpiles.
-        // Disabling diagnostics also fixes @types resolution across monorepo roots.
+        tsconfig: "./tsconfig.jest.json",
         diagnostics: false,
       },
     ],
   },
 };
-
-module.exports = config;

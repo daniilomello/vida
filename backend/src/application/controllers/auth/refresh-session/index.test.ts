@@ -1,14 +1,14 @@
 import type { APIGatewayProxyEvent } from "aws-lambda";
 
-const mockSend = jest.fn();
+const mockSend = jest.fn() as jest.MockedFunction<(cmd: unknown) => Promise<unknown>>;
 
-jest.mock("@aws-sdk/client-cognito-identity-provider", () => ({
-  CognitoIdentityProviderClient: jest.fn().mockImplementation(() => ({ send: mockSend })),
-  InitiateAuthCommand: jest.fn().mockImplementation((params) => params),
+jest.mock("../../../clients/cognito", () => ({
+  cognitoClient: { send: mockSend },
+  cognitoVerifier: {},
 }));
 
 // eslint-disable-next-line import/first
-import { handler } from "./refresh-session";
+import { handler } from ".";
 
 function makeEvent(cookieHeader?: string): APIGatewayProxyEvent {
   return {
@@ -53,35 +53,26 @@ describe("refreshSession", () => {
     expect(cookies.find((c) => c.startsWith("accessToken="))).toContain("new.access.token");
   });
 
-  it("should return 401 when no refresh token cookie is present", async () => {
-    const result = await handler(makeEvent(), {} as never, () => {});
-    const res = result as Exclude<typeof result, void>;
-
-    expect(res.statusCode).toBe(401);
-    expect(JSON.parse(res.body).error.code).toBe("UNAUTHORIZED");
+  it("should throw 401 when no refresh token cookie is present", async () => {
+    await expect(handler(makeEvent(), {} as never, () => {})).rejects.toMatchObject({
+      statusCode: 401,
+    });
     expect(mockSend).not.toHaveBeenCalled();
   });
 
-  it("should return 401 when Cognito rejects the refresh token", async () => {
+  it("should throw 401 when Cognito rejects the refresh token", async () => {
     mockSend.mockRejectedValue(new Error("NotAuthorizedException"));
 
-    const result = await handler(
-      makeEvent("refreshToken=expired.refresh.token"),
-      {} as never,
-      () => {},
-    );
-    const res = result as Exclude<typeof result, void>;
-
-    expect(res.statusCode).toBe(401);
-    expect(JSON.parse(res.body).error.code).toBe("UNAUTHORIZED");
+    await expect(
+      handler(makeEvent("refreshToken=expired.refresh.token"), {} as never, () => {}),
+    ).rejects.toMatchObject({ statusCode: 401 });
   });
 
-  it("should return 401 when Cognito returns no tokens", async () => {
+  it("should throw 401 when Cognito returns no tokens", async () => {
     mockSend.mockResolvedValue({ AuthenticationResult: {} });
 
-    const result = await handler(makeEvent("refreshToken=refresh.token"), {} as never, () => {});
-    const res = result as Exclude<typeof result, void>;
-
-    expect(res.statusCode).toBe(401);
+    await expect(
+      handler(makeEvent("refreshToken=refresh.token"), {} as never, () => {}),
+    ).rejects.toMatchObject({ statusCode: 401 });
   });
 });

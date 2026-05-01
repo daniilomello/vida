@@ -1,5 +1,5 @@
 import type { APIGatewayProxyEvent } from "aws-lambda";
-import { handler } from "./delete-session";
+import { handler } from ".";
 
 function makeEvent(): APIGatewayProxyEvent {
   return {

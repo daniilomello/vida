@@ -1,7 +1,6 @@
-import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
+import { SendEmailCommand } from "@aws-sdk/client-ses";
 import type { CreateAuthChallengeTriggerHandler } from "aws-lambda";
-
-const ses = new SESClient({ region: process.env.AWS_REGION ?? "us-east-1" });
+import { sesClient } from "../../../clients/ses";
 
 export const handler: CreateAuthChallengeTriggerHandler = async (event) => {
   let secretCode: string;
@@ -13,7 +12,7 @@ export const handler: CreateAuthChallengeTriggerHandler = async (event) => {
 
     secretCode = String(Math.floor(100000 + Math.random() * 900000));
 
-    await ses.send(
+    await sesClient.send(
       new SendEmailCommand({
         Destination: { ToAddresses: [event.request.userAttributes.email] },
         Message: {

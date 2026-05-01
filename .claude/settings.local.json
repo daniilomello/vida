@@ -67,7 +67,13 @@
       "mcp__github__pull_request_read",
       "WebFetch(domain:ui.shadcn.com)",
       "Bash(npx shadcn@latest init -d)",
-      "Bash(npx shadcn@latest *)"
+      "Bash(npx shadcn@latest *)",
+      "Bash(rm -f lib/cognito.ts lib/utils.ts lib/utils.test.ts services/auth-service.ts store/auth.store.ts components/ProtectedRoute.tsx components/Logo/index.tsx components/ui/button.tsx components/ui/input.tsx components/ui/label.tsx pages/LoginPage.tsx pages/SignupPage.tsx pages/ForgotPasswordPage.tsx)",
+      "Bash(rmdir lib *)",
+      "Bash(grep -n \"\\\\.js$\\\\|\\\\.d\\\\.ts\" /Users/danilo/www/vida/frontend/.gitignore)",
+      "Bash(grep -E \"\\\\.\\(json|yml|ts|js\\)$\")",
+      "Bash(npm show *)",
+      "Bash(npx tsc *)"
     ]
   }
 }

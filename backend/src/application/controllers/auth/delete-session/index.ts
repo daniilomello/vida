@@ -1,5 +1,5 @@
 import type { APIGatewayProxyHandler } from "aws-lambda";
-import { clearCookie } from "../../lib/cookies";
+import { clearCookie } from "../../../../main/utils/cookies";
 
 export const handler: APIGatewayProxyHandler = async () => {
   return {

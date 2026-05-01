@@ -1,0 +1,9 @@
+Outputs:
+  CognitoUserPoolId:
+    Value: !Ref CognitoUserPool
+    Export:
+      Name: VidaCognitoUserPoolId-${self:provider.stage}
+  CognitoUserPoolClientId:
+    Value: !Ref CognitoUserPoolClient
+    Export:
+      Name: VidaCognitoUserPoolClientId-${self:provider.stage}

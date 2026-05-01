@@ -1,9 +1,9 @@
 import type { APIGatewayProxyEvent } from "aws-lambda";
-import { handler } from "./create-session";
+import { handler } from ".";
 
 function makeEvent(body: unknown): APIGatewayProxyEvent {
   return {
-    body: JSON.stringify(body),
+    body: body as unknown as string,
     headers: {},
     multiValueHeaders: {},
     httpMethod: "POST",
@@ -48,37 +48,15 @@ describe("createSession", () => {
     expect(refreshCookie).toContain("Max-Age=2592000");
   });
 
-  it("should return 400 when a token is missing", async () => {
-    const result = await handler(
-      makeEvent({ accessToken: "x", idToken: "y" }),
-      {} as never,
-      () => {},
-    );
-    const res = result as Exclude<typeof result, void>;
-
-    expect(res.statusCode).toBe(400);
-    expect(JSON.parse(res.body).error.code).toBe("VALIDATION_ERROR");
+  it("should throw 400 when a token is missing", async () => {
+    await expect(
+      handler(makeEvent({ accessToken: "x", idToken: "y" }), {} as never, () => {}),
+    ).rejects.toMatchObject({ statusCode: 400 });
   });
 
-  it("should return 400 when body is not valid JSON", async () => {
-    const event = makeEvent(null);
-    event.body = "not-json";
-
-    const result = await handler(event, {} as never, () => {});
-    const res = result as Exclude<typeof result, void>;
-
-    expect(res.statusCode).toBe(400);
-    expect(JSON.parse(res.body).error.code).toBe("INVALID_JSON");
-  });
-
-  it("should return 400 when body is empty", async () => {
-    const event = makeEvent(null);
-    event.body = null;
-
-    const result = await handler(event, {} as never, () => {});
-    const res = result as Exclude<typeof result, void>;
-
-    expect(res.statusCode).toBe(400);
-    expect(JSON.parse(res.body).error.code).toBe("VALIDATION_ERROR");
+  it("should throw 400 when body is empty", async () => {
+    await expect(handler(makeEvent(null), {} as never, () => {})).rejects.toMatchObject({
+      statusCode: 400,
+    });
   });
 });

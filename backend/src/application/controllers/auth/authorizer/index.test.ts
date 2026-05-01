@@ -1,16 +1,15 @@
 import type { APIGatewayRequestAuthorizerEvent } from "aws-lambda";
 
-const mockVerify = jest.fn();
+const mockVerify = jest.fn() as jest.MockedFunction<(token: string) => Promise<{ sub: string }>>;
 
-jest.mock("aws-jwt-verify", () => ({
-  CognitoJwtVerifier: {
-    create: jest.fn().mockReturnValue({ verify: mockVerify }),
-  },
+jest.mock("../../../clients/cognito", () => ({
+  cognitoClient: {},
+  cognitoVerifier: { verify: mockVerify },
 }));
 
 // Import after mock is set up
 // eslint-disable-next-line import/first
-import { handler } from "./authorizer";
+import { handler } from ".";
 
 function makeEvent(cookieHeader?: string): APIGatewayRequestAuthorizerEvent {
   return {
@@ -37,14 +36,14 @@ describe("lambdaAuthorizer", () => {
   it("should return Allow policy when idToken is valid", async () => {
     mockVerify.mockResolvedValue({ sub: "user-123" });
 
-    const result = await handler(makeEvent("idToken=valid.jwt.token"), {} as never, () => {});
+    const result = await handler(makeEvent("idToken=valid.jwt.token"));
 
     expect(result.principalId).toBe("user-123");
     expect(result.policyDocument.Statement[0].Effect).toBe("Allow");
   });
 
   it("should return Deny policy when idToken cookie is missing", async () => {
-    const result = await handler(makeEvent(), {} as never, () => {});
+    const result = await handler(makeEvent());
 
     expect(result.principalId).toBe("anonymous");
     expect(result.policyDocument.Statement[0].Effect).toBe("Deny");
@@ -54,7 +53,7 @@ describe("lambdaAuthorizer", () => {
   it("should return Deny policy when idToken is expired or invalid", async () => {
     mockVerify.mockRejectedValue(new Error("Token expired"));
 
-    const result = await handler(makeEvent("idToken=expired.jwt.token"), {} as never, () => {});
+    const result = await handler(makeEvent("idToken=expired.jwt.token"));
 
     expect(result.principalId).toBe("anonymous");
     expect(result.policyDocument.Statement[0].Effect).toBe("Deny");
@@ -65,8 +64,6 @@ describe("lambdaAuthorizer", () => {
 
     const result = await handler(
       makeEvent("accessToken=access.token; idToken=id.token; refreshToken=refresh.token"),
-      {} as never,
-      () => {},
     );
 
     expect(result.principalId).toBe("user-456");

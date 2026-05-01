@@ -1,0 +1,48 @@
+health:
+  handler: src/main/functions/health.health
+  events:
+    - http:
+        path: api/v1/health
+        method: get
+        cors: ${self:custom.corsConfig}
+
+lambdaAuthorizer:
+  handler: src/main/functions/auth/authorizer.handler
+
+createSession:
+  handler: src/main/functions/auth/create-session.createSession
+  events:
+    - http:
+        path: api/v1/auth/session
+        method: post
+        cors: ${self:custom.corsConfig}
+
+refreshSession:
+  handler: src/main/functions/auth/refresh-session.refreshSession
+  events:
+    - http:
+        path: api/v1/auth/refresh
+        method: post
+        cors: ${self:custom.corsConfig}
+
+deleteSession:
+  handler: src/main/functions/auth/delete-session.deleteSession
+  events:
+    - http:
+        path: api/v1/auth/session
+        method: delete
+        cors: ${self:custom.corsConfig}
+        authorizer:
+          name: lambdaAuthorizer
+          resultTtlInSeconds: 300
+          identitySource: method.request.header.Cookie
+          type: request
+
+defineAuthChallenge:
+  handler: src/main/functions/auth/define-auth-challenge.handler
+
+createAuthChallenge:
+  handler: src/main/functions/auth/create-auth-challenge.handler
+
+verifyAuthChallengeResponse:
+  handler: src/main/functions/auth/verify-auth-challenge-response.handler

@@ -1,12 +1,6 @@
-import { CognitoJwtVerifier } from "aws-jwt-verify";
 import type { APIGatewayAuthorizerResult, APIGatewayRequestAuthorizerEvent } from "aws-lambda";
-import { parseCookies } from "../../lib/cookies";
-
-const verifier = CognitoJwtVerifier.create({
-  userPoolId: process.env.COGNITO_USER_POOL_ID ?? "",
-  clientId: process.env.COGNITO_CLIENT_ID ?? "",
-  tokenUse: "id",
-});
+import { parseCookies } from "../../../../main/utils/cookies";
+import { cognitoVerifier } from "../../../clients/cognito";
 
 function buildPolicy(
   principalId: string,
@@ -31,7 +25,7 @@ export const handler = async (
   if (!idToken) return buildPolicy("anonymous", "Deny", event.methodArn);
 
   try {
-    const payload = await verifier.verify(idToken);
+    const payload = await cognitoVerifier.verify(idToken);
     return buildPolicy(payload.sub, "Allow", event.methodArn);
   } catch {
     return buildPolicy("anonymous", "Deny", event.methodArn);
