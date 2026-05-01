@@ -1,10 +1,10 @@
+import type { ReactNode } from "react";
+import { Navigate, Route, Routes } from "react-router";
+import { Toaster } from "sonner";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { LoginPage } from "@/pages/LoginPage";
 import { SignupPage } from "@/pages/SignupPage";
 import { useAuthStore } from "@/store/auth.store";
-import type { ReactNode } from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
-import { Toaster } from "sonner";
 
 export function App() {
   return (

@@ -1,0 +1,2 @@
+npm run test -w frontend
+npm run test -w backend
