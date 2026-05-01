@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
+    "postinstall": "node scripts/patch-serverless-offline.mjs",
     "dev": "serverless offline start",
     "deploy:dev": "serverless deploy --stage dev",
     "check": "biome check .",
