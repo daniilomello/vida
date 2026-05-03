@@ -1,15 +1,14 @@
-import { ArrowLeft, Check, CreditCard, Pencil, Plus, RotateCcw, Trash2, X } from "lucide-react";
+import { Check, CreditCard, Pencil, Plus, RotateCcw, Trash2, X } from "lucide-react";
 import { useState } from "react";
-import { useNavigate } from "react-router";
 import { useCards } from "@/app/cards/hooks/useCards";
 import { cn } from "@/app/core/utils/cn";
+import { Header } from "@/view/components/Header";
 import { Button } from "@/view/components/ui/button";
 import { Input } from "@/view/components/ui/input";
 
 type Tab = "active" | "inactive";
 
 export function Cards() {
-  const navigate = useNavigate();
   const [tab, setTab] = useState<Tab>("active");
 
   const [showAddForm, setShowAddForm] = useState(false);
@@ -80,24 +79,24 @@ export function Cards() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <header className="sticky top-0 z-10 flex items-center gap-2 border-b border-border bg-background px-4 py-3">
-        <Button variant="ghost" size="icon-sm" onClick={() => navigate("/")}>
-          <ArrowLeft />
-        </Button>
-        <h1 className="flex-1 text-base font-semibold">Cards</h1>
-        {tab === "active" && (
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            onClick={() => {
-              setShowAddForm((v) => !v);
-              setNewNickname("");
-            }}
-          >
-            <Plus />
-          </Button>
-        )}
-      </header>
+      <Header
+        showBack
+        title="Cards"
+        right={
+          tab === "active" ? (
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              onClick={() => {
+                setShowAddForm((v) => !v);
+                setNewNickname("");
+              }}
+            >
+              <Plus />
+            </Button>
+          ) : undefined
+        }
+      />
 
       <div className="flex border-b border-border px-4">
         {(["active", "inactive"] as const).map((t) => (
