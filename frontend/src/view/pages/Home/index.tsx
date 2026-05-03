@@ -1,8 +1,9 @@
 import { CreditCard } from "lucide-react";
 import { Link } from "react-router";
 import { useCards } from "@/app/cards/hooks/useCards";
+import { cn } from "@/app/core/utils/cn";
 import { Header } from "@/view/components/Header";
-import { Button } from "@/view/components/ui/button";
+import { buttonVariants } from "@/view/components/ui/button";
 
 const PREVIEW_LIMIT = 3;
 
@@ -40,9 +41,9 @@ export function Home() {
                 <CreditCard className="size-5 text-muted-foreground" />
               </div>
               <p className="text-sm text-muted-foreground">No cards yet</p>
-              <Button asChild size="sm" variant="outline">
-                <Link to="/cards">Add your first card</Link>
-              </Button>
+              <Link to="/cards" className={buttonVariants({ variant: "outline", size: "sm" })}>
+                Add your first card
+              </Link>
             </div>
           )}
 
@@ -61,9 +62,15 @@ export function Home() {
               ))}
 
               {hasMore && (
-                <Button asChild variant="ghost" size="sm" className="w-full text-muted-foreground">
-                  <Link to="/cards">View all {cards.length} cards</Link>
-                </Button>
+                <Link
+                  to="/cards"
+                  className={cn(
+                    buttonVariants({ variant: "ghost", size: "sm" }),
+                    "w-full justify-center text-muted-foreground",
+                  )}
+                >
+                  View all {cards.length} cards
+                </Link>
               )}
             </div>
           )}
