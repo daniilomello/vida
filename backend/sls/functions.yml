@@ -64,6 +64,45 @@ getCards:
           identitySource: method.request.header.Cookie
           type: request
 
+updateCard:
+  handler: src/main/functions/cards/update-card.updateCard
+  events:
+    - http:
+        path: api/v1/cards/{id}
+        method: put
+        cors: ${self:custom.corsConfig}
+        authorizer:
+          name: lambdaAuthorizer
+          resultTtlInSeconds: 300
+          identitySource: method.request.header.Cookie
+          type: request
+
+deleteCard:
+  handler: src/main/functions/cards/delete-card.deleteCard
+  events:
+    - http:
+        path: api/v1/cards/{id}
+        method: delete
+        cors: ${self:custom.corsConfig}
+        authorizer:
+          name: lambdaAuthorizer
+          resultTtlInSeconds: 300
+          identitySource: method.request.header.Cookie
+          type: request
+
+reactivateCard:
+  handler: src/main/functions/cards/reactivate-card.reactivateCard
+  events:
+    - http:
+        path: api/v1/cards/{id}/reactivate
+        method: put
+        cors: ${self:custom.corsConfig}
+        authorizer:
+          name: lambdaAuthorizer
+          resultTtlInSeconds: 300
+          identitySource: method.request.header.Cookie
+          type: request
+
 defineAuthChallenge:
   handler: src/main/functions/auth/define-auth-challenge.handler
 
