@@ -13,9 +13,9 @@ All endpoints (except `/auth/session` and `/auth/refresh`) require authenticatio
 | `DELETE` | `/auth/session` | ✅ Implemented |
 | `POST` | `/cards` | ✅ Implemented |
 | `GET` | `/cards` | ✅ Implemented |
-| `PUT` | `/cards/{id}` | 🔜 Planned |
-| `DELETE` | `/cards/{id}` | 🔜 Planned |
-| `PUT` | `/cards/{id}/reactivate` | 🔜 Planned |
+| `PUT` | `/cards/{id}` | ✅ Implemented |
+| `DELETE` | `/cards/{id}` | ✅ Implemented |
+| `PUT` | `/cards/{id}/reactivate` | ✅ Implemented |
 | `POST` | `/bills` | 🔜 Planned |
 | `GET` | `/bills` | 🔜 Planned |
 | `PUT` | `/bills/{id}` | 🔜 Planned |
@@ -123,7 +123,7 @@ List credit cards.
 
 ---
 
-### PUT /cards/{id} 🔜
+### PUT /cards/{id} ✅
 Update card nickname.
 
 **Request**
@@ -131,11 +131,17 @@ Update card nickname.
 { "nickname": "Nubank Black" }
 ```
 
+| Field | Type | Required | Notes |
+| :--- | :--- | :--- | :--- |
+| `nickname` | string | yes | Whitespace is trimmed |
+
 **Response** `200 OK` — updated card object.
+
+**Error** `404 Not Found` — card not found.
 
 ---
 
-### DELETE /cards/{id} 🔜
+### DELETE /cards/{id} ✅
 Soft-delete a card (`active = false`). Historical transactions referencing this card are preserved.
 
 **Response** `200 OK`
@@ -143,15 +149,19 @@ Soft-delete a card (`active = false`). Historical transactions referencing this 
 { "message": "Card deactivated" }
 ```
 
+**Error** `404 Not Found` — card not found.
+
 ---
 
-### PUT /cards/{id}/reactivate 🔜
+### PUT /cards/{id}/reactivate ✅
 Reactivate a soft-deleted card.
 
 **Response** `200 OK`
 ```json
 { "message": "Card reactivated" }
 ```
+
+**Error** `404 Not Found` — card not found.
 
 ---
 
