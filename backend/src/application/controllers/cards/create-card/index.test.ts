@@ -22,7 +22,7 @@ function makeEvent(body: unknown, principalId = "user-123"): APIGatewayProxyEven
     multiValueQueryStringParameters: null,
     requestContext: {
       authorizer: { principalId },
-    } as APIGatewayProxyEvent["requestContext"],
+    } as unknown as APIGatewayProxyEvent["requestContext"],
     resource: "",
     stageVariables: null,
   };
