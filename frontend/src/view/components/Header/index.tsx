@@ -22,13 +22,13 @@ export function Header({ title, showBack = false, right, className }: HeaderProp
         className,
       )}
     >
-      {showBack ? (
+      {showBack && (
         <Button variant="ghost" size="icon-sm" onClick={() => navigate(-1)}>
           <ArrowLeft />
         </Button>
-      ) : (
-        <Logo width={36} height={36} />
       )}
+
+      <Logo width={36} height={36} />
 
       {title && <h1 className="flex-1 text-base font-semibold">{title}</h1>}
       {!title && <span className="flex-1" />}
