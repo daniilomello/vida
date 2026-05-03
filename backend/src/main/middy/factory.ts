@@ -18,7 +18,7 @@ type MiddyApiGatewayHandler = (
 
 export function createHttpHandler(handler: APIGatewayProxyHandler) {
   return middy<APIGatewayProxyEvent, APIGatewayProxyResult, Error, Context>()
-    .use(httpJsonBodyParser())
+    .use(httpJsonBodyParser({ disableContentTypeError: true }))
     .use(httpErrorHandler())
     .handler(handler as unknown as MiddyApiGatewayHandler);
 }
