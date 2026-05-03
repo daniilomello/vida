@@ -6,7 +6,7 @@ stage: ${opt:stage, 'local'}
 environment:
   STAGE: ${self:provider.stage}
   FRONTEND_ORIGIN: ${env:FRONTEND_ORIGIN, 'http://localhost:5173'}
-  DYNAMODB_TABLE: FinanceApp-Data-${self:provider.stage}
+  DYNAMODB_TABLE: ${env:DYNAMODB_TABLE, 'FinanceApp-Data-${self:provider.stage}'}
   SES_FROM_EMAIL: ${env:SES_FROM_EMAIL, 'noreply@vida.app'}
   COGNITO_USER_POOL_ID: ${env:COGNITO_USER_POOL_ID, ''}
   COGNITO_CLIENT_ID: ${env:COGNITO_CLIENT_ID, ''}

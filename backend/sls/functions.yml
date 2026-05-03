@@ -38,6 +38,32 @@ deleteSession:
           identitySource: method.request.header.Cookie
           type: request
 
+createCard:
+  handler: src/main/functions/cards/create-card.createCard
+  events:
+    - http:
+        path: api/v1/cards
+        method: post
+        cors: ${self:custom.corsConfig}
+        authorizer:
+          name: lambdaAuthorizer
+          resultTtlInSeconds: 300
+          identitySource: method.request.header.Cookie
+          type: request
+
+getCards:
+  handler: src/main/functions/cards/get-cards.getCards
+  events:
+    - http:
+        path: api/v1/cards
+        method: get
+        cors: ${self:custom.corsConfig}
+        authorizer:
+          name: lambdaAuthorizer
+          resultTtlInSeconds: 300
+          identitySource: method.request.header.Cookie
+          type: request
+
 defineAuthChallenge:
   handler: src/main/functions/auth/define-auth-challenge.handler
 
