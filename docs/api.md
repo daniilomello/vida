@@ -4,11 +4,34 @@ Base URL: `https://api.yourdomain.com/api/v1`
 
 All endpoints (except `/auth/session` and `/auth/refresh`) require authentication via `httpOnly` session cookie set by `POST /auth/session`.
 
+## Implementation Status
+
+| Method | Endpoint | Status |
+| :--- | :--- | :--- |
+| `POST` | `/auth/session` | ✅ Implemented |
+| `POST` | `/auth/refresh` | ✅ Implemented |
+| `DELETE` | `/auth/session` | ✅ Implemented |
+| `POST` | `/cards` | ✅ Implemented |
+| `GET` | `/cards` | ✅ Implemented |
+| `PUT` | `/cards/{id}` | ✅ Implemented |
+| `DELETE` | `/cards/{id}` | ✅ Implemented |
+| `PUT` | `/cards/{id}/reactivate` | ✅ Implemented |
+| `POST` | `/bills` | 🔜 Planned |
+| `GET` | `/bills` | 🔜 Planned |
+| `PUT` | `/bills/{id}` | 🔜 Planned |
+| `DELETE` | `/bills/{id}` | 🔜 Planned |
+| `PUT` | `/bills/{id}/reactivate` | 🔜 Planned |
+| `POST` | `/transactions` | 🔜 Planned |
+| `GET` | `/transactions` | 🔜 Planned |
+| `DELETE` | `/transactions/{id}` | 🔜 Planned |
+| `PUT` | `/transactions/{id}/pay` | 🔜 Planned |
+| `GET` | `/summary` | 🔜 Planned |
+
 ---
 
 ## Auth
 
-### POST /auth/session
+### POST /auth/session ✅
 Exchange Cognito tokens for session cookies. Public endpoint — no auth required.
 
 **Request**
@@ -24,11 +47,11 @@ Exchange Cognito tokens for session cookies. Public endpoint — no auth require
 ```json
 { "message": "Session created" }
 ```
-Sets `httpOnly; Secure; SameSite=Strict` cookies: `idToken`, `refreshToken`.
+Sets `httpOnly; Secure; SameSite=Strict` cookies: `idToken`, `accessToken`, `refreshToken`.
 
 ---
 
-### POST /auth/refresh
+### POST /auth/refresh ✅
 Rotate RefreshToken and reissue cookies. Reads `refreshToken` cookie directly.
 
 **Request** — no body required.
@@ -40,7 +63,7 @@ Rotate RefreshToken and reissue cookies. Reads `refreshToken` cookie directly.
 
 ---
 
-### DELETE /auth/session
+### DELETE /auth/session ✅
 Clear session cookies (logout).
 
 **Response** `200 OK`
@@ -52,7 +75,7 @@ Clear session cookies (logout).
 
 ## Cards
 
-### POST /cards
+### POST /cards ✅
 Create a new credit card.
 
 **Request**
@@ -60,20 +83,24 @@ Create a new credit card.
 { "nickname": "Nubank" }
 ```
 
+| Field | Type | Required | Notes |
+| :--- | :--- | :--- | :--- |
+| `nickname` | string | yes | Whitespace is trimmed |
+
 **Response** `201 Created`
 ```json
 {
   "id": "card-uuid-123",
   "nickname": "Nubank",
   "active": true,
-  "createdAt": "2026-04-25T10:00:00",
-  "updatedAt": "2026-04-25T10:00:00"
+  "createdAt": "2026-04-25T10:00:00.000Z",
+  "updatedAt": "2026-04-25T10:00:00.000Z"
 }
 ```
 
 ---
 
-### GET /cards
+### GET /cards ✅
 List credit cards.
 
 **Query params**
@@ -84,13 +111,19 @@ List credit cards.
 **Response** `200 OK`
 ```json
 [
-  { "id": "card-uuid-123", "nickname": "Nubank", "active": true, "createdAt": "2026-04-25T10:00:00", "updatedAt": "2026-04-25T10:00:00" }
+  {
+    "id": "card-uuid-123",
+    "nickname": "Nubank",
+    "active": true,
+    "createdAt": "2026-04-25T10:00:00.000Z",
+    "updatedAt": "2026-04-25T10:00:00.000Z"
+  }
 ]
 ```
 
 ---
 
-### PUT /cards/{id}
+### PUT /cards/{id} ✅
 Update card nickname.
 
 **Request**
@@ -98,11 +131,17 @@ Update card nickname.
 { "nickname": "Nubank Black" }
 ```
 
+| Field | Type | Required | Notes |
+| :--- | :--- | :--- | :--- |
+| `nickname` | string | yes | Whitespace is trimmed |
+
 **Response** `200 OK` — updated card object.
+
+**Error** `404 Not Found` — card not found.
 
 ---
 
-### DELETE /cards/{id}
+### DELETE /cards/{id} ✅
 Soft-delete a card (`active = false`). Historical transactions referencing this card are preserved.
 
 **Response** `200 OK`
@@ -110,9 +149,11 @@ Soft-delete a card (`active = false`). Historical transactions referencing this 
 { "message": "Card deactivated" }
 ```
 
+**Error** `404 Not Found` — card not found.
+
 ---
 
-### PUT /cards/{id}/reactivate
+### PUT /cards/{id}/reactivate ✅
 Reactivate a soft-deleted card.
 
 **Response** `200 OK`
@@ -120,11 +161,13 @@ Reactivate a soft-deleted card.
 { "message": "Card reactivated" }
 ```
 
+**Error** `404 Not Found` — card not found.
+
 ---
 
 ## Bills
 
-### POST /bills
+### POST /bills 🔜
 Create a recurring bill definition.
 
 **Request**
@@ -149,14 +192,14 @@ Create a recurring bill definition.
   "category": "ENTERTAINMENT",
   "paidVia": "CREDIT_CARD#card-uuid-123",
   "active": true,
-  "createdAt": "2026-04-25T10:00:00",
-  "updatedAt": "2026-04-25T10:00:00"
+  "createdAt": "2026-04-25T10:00:00.000Z",
+  "updatedAt": "2026-04-25T10:00:00.000Z"
 }
 ```
 
 ---
 
-### GET /bills
+### GET /bills 🔜
 List bill definitions.
 
 **Query params**
@@ -168,7 +211,7 @@ List bill definitions.
 
 ---
 
-### PUT /bills/{id}
+### PUT /bills/{id} 🔜
 Update a bill definition.
 
 **Request** — any subset of bill fields:
@@ -180,7 +223,7 @@ Update a bill definition.
 
 ---
 
-### DELETE /bills/{id}
+### DELETE /bills/{id} 🔜
 Soft-delete a bill (`active = false`). Excluded from future monthly generation.
 
 **Response** `200 OK`
@@ -190,7 +233,7 @@ Soft-delete a bill (`active = false`). Excluded from future monthly generation.
 
 ---
 
-### PUT /bills/{id}/reactivate
+### PUT /bills/{id}/reactivate 🔜
 Reactivate a soft-deleted bill.
 
 **Response** `200 OK`
@@ -202,7 +245,7 @@ Reactivate a soft-deleted bill.
 
 ## Transactions
 
-### POST /transactions
+### POST /transactions 🔜
 Create a new expense.
 
 **Request**
@@ -230,14 +273,14 @@ Create a new expense.
   "date": "2026-04-25T12:30:00",
   "deleted": false,
   "paidAt": "2026-04-25T12:30:00",
-  "createdAt": "2026-04-25T12:30:00",
-  "updatedAt": "2026-04-25T12:30:00"
+  "createdAt": "2026-04-25T12:30:00.000Z",
+  "updatedAt": "2026-04-25T12:30:00.000Z"
 }
 ```
 
 ---
 
-### GET /transactions
+### GET /transactions 🔜
 List transactions with optional filters.
 
 **Query params**
@@ -261,8 +304,8 @@ List transactions with optional filters.
     "date": "2026-04-10T12:30:00",
     "deleted": false,
     "paidAt": "2026-04-10T12:30:00",
-    "createdAt": "2026-04-10T12:30:00",
-    "updatedAt": "2026-04-10T12:30:00"
+    "createdAt": "2026-04-10T12:30:00.000Z",
+    "updatedAt": "2026-04-10T12:30:00.000Z"
   },
   {
     "id": "e5f6g7h8-...",
@@ -277,15 +320,15 @@ List transactions with optional filters.
     "billId": "bill-uuid-456",
     "deleted": false,
     "paidAt": null,
-    "createdAt": "2026-04-01T00:00:00",
-    "updatedAt": "2026-04-01T00:00:00"
+    "createdAt": "2026-04-01T00:00:00.000Z",
+    "updatedAt": "2026-04-01T00:00:00.000Z"
   }
 ]
 ```
 
 ---
 
-### DELETE /transactions/{id}
+### DELETE /transactions/{id} 🔜
 Soft-delete a transaction (`deleted = true`). Excluded from queries but preserved for audit.
 
 **Response** `200 OK`
@@ -295,7 +338,7 @@ Soft-delete a transaction (`deleted = true`). Excluded from queries but preserve
 
 ---
 
-### PUT /transactions/{id}/pay
+### PUT /transactions/{id}/pay 🔜
 Mark a `BILL_PAYMENT` transaction as paid.
 
 **Request** — no body required.
@@ -305,8 +348,8 @@ Mark a `BILL_PAYMENT` transaction as paid.
 {
   "id": "e5f6g7h8-...",
   "status": "PAID",
-  "paidAt": "2026-04-15T09:30:00",
-  "updatedAt": "2026-04-15T09:30:00"
+  "paidAt": "2026-04-15T09:30:00.000Z",
+  "updatedAt": "2026-04-15T09:30:00.000Z"
 }
 ```
 
@@ -314,7 +357,7 @@ Mark a `BILL_PAYMENT` transaction as paid.
 
 ## Summary
 
-### GET /summary
+### GET /summary 🔜
 Monthly aggregation computed by the backend.
 
 **Query params**
