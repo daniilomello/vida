@@ -103,6 +103,19 @@ reactivateCard:
           identitySource: method.request.header.Cookie
           type: request
 
+createTransaction:
+  handler: src/main/functions/transactions/create-transaction.createTransaction
+  events:
+    - http:
+        path: api/v1/transactions
+        method: post
+        cors: ${self:custom.corsConfig}
+        authorizer:
+          name: lambdaAuthorizer
+          resultTtlInSeconds: 300
+          identitySource: method.request.header.Cookie
+          type: request
+
 defineAuthChallenge:
   handler: src/main/functions/auth/define-auth-challenge.handler
 
