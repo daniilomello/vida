@@ -116,6 +116,19 @@ createTransaction:
           identitySource: method.request.header.Cookie
           type: request
 
+getTransactions:
+  handler: src/main/functions/transactions/get-transactions.getTransactions
+  events:
+    - http:
+        path: api/v1/transactions
+        method: get
+        cors: ${self:custom.corsConfig}
+        authorizer:
+          name: lambdaAuthorizer
+          resultTtlInSeconds: 300
+          identitySource: method.request.header.Cookie
+          type: request
+
 defineAuthChallenge:
   handler: src/main/functions/auth/define-auth-challenge.handler
 
