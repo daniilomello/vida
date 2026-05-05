@@ -12,7 +12,7 @@ build:
     bundle: true
     minify: true
     sourcemap: false
-    format: cjs
+    format: esm
     exclude:
       - '@aws-sdk/*'
 
