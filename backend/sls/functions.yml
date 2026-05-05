@@ -129,6 +129,19 @@ getTransactions:
           identitySource: method.request.header.Cookie
           type: request
 
+deleteTransaction:
+  handler: src/main/functions/transactions/delete-transaction.deleteTransaction
+  events:
+    - http:
+        path: api/v1/transactions/{id}
+        method: delete
+        cors: ${self:custom.corsConfig}
+        authorizer:
+          name: lambdaAuthorizer
+          resultTtlInSeconds: 300
+          identitySource: method.request.header.Cookie
+          type: request
+
 defineAuthChallenge:
   handler: src/main/functions/auth/define-auth-challenge.handler
 
