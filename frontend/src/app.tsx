@@ -4,7 +4,7 @@ import { AppRouter } from "@/router";
 export function App() {
   return (
     <>
-      <Toaster position="top-center" richColors theme="dark" />
+      <Toaster position="top-center" richColors theme="dark" duration={3000} />
       <AppRouter />
     </>
   );
