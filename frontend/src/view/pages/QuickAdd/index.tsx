@@ -108,7 +108,7 @@ export function QuickAdd() {
               <option value="CASH">Cash</option>
               <option value="DEBIT">Debit</option>
               {cards.map((card) => (
-                <option key={card.id} value={card.id}>
+                <option key={card.id} value={`CREDIT_CARD#${card.id}`}>
                   {card.nickname}
                 </option>
               ))}

@@ -1,4 +1,4 @@
-import { CreditCard } from "lucide-react";
+import { CreditCard, PlusCircle, Receipt, ScanLine } from "lucide-react";
 import { Link } from "react-router";
 import { useCards } from "@/app/cards/hooks/useCards";
 import { cn } from "@/app/core/utils/cn";
@@ -17,6 +17,41 @@ export function Home() {
       <Header />
 
       <main className="flex-1 px-4 py-6 space-y-6">
+        <section>
+          <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            Quick Actions
+          </h2>
+          <div className="grid grid-cols-3 gap-3">
+            <Link
+              to="/quick-add"
+              className="flex flex-col items-center gap-2 rounded-xl border border-border bg-card px-3 py-4 text-center transition-colors hover:bg-muted/30"
+            >
+              <div className="flex size-10 items-center justify-center rounded-full bg-primary/10">
+                <PlusCircle className="size-5 text-primary" />
+              </div>
+              <span className="text-xs font-medium leading-tight">Quick Add</span>
+            </Link>
+            <Link
+              to="/transactions"
+              className="flex flex-col items-center gap-2 rounded-xl border border-border bg-card px-3 py-4 text-center transition-colors hover:bg-muted/30"
+            >
+              <div className="flex size-10 items-center justify-center rounded-full bg-primary/10">
+                <Receipt className="size-5 text-primary" />
+              </div>
+              <span className="text-xs font-medium leading-tight">Transactions</span>
+            </Link>
+            <Link
+              to="/card-audit"
+              className="flex flex-col items-center gap-2 rounded-xl border border-border bg-card px-3 py-4 text-center transition-colors hover:bg-muted/30"
+            >
+              <div className="flex size-10 items-center justify-center rounded-full bg-primary/10">
+                <ScanLine className="size-5 text-primary" />
+              </div>
+              <span className="text-xs font-medium leading-tight">Card Audit</span>
+            </Link>
+          </div>
+        </section>
+
         <section>
           <div className="mb-3 flex items-center justify-between">
             <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">

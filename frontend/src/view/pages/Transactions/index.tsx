@@ -1,5 +1,6 @@
 import { ChevronLeft, ChevronRight, Receipt, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { fetchCards } from "@/app/cards/services";
 import { cn } from "@/app/core/utils/cn";
 import { useTransactions } from "@/app/transactions/hooks/useTransactions";
 import type { Transaction } from "@/app/transactions/types";
@@ -52,11 +53,30 @@ function formatAmount(amount: number): string {
   );
 }
 
+function resolvePaidVia(paidVia: string, cardMap: Map<string, string>): string {
+  if (paidVia === "CASH") return "Cash";
+  if (paidVia === "DEBIT") return "Debit";
+  if (paidVia.startsWith("CREDIT_CARD#")) {
+    const id = paidVia.slice("CREDIT_CARD#".length);
+    return cardMap.get(id) ?? "Credit Card";
+  }
+  return paidVia;
+}
+
 export function Transactions() {
   const { transactions, loading, month, setMonth, remove, markPaid } = useTransactions();
+  const [cardMap, setCardMap] = useState<Map<string, string>>(new Map());
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [markingPaidId, setMarkingPaidId] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchCards("true")
+      .then((cards) => {
+        setCardMap(new Map(cards.map((c) => [c.id, c.nickname])));
+      })
+      .catch(() => {});
+  }, []);
 
   async function handleDelete(id: string) {
     setDeleteLoading(true);
@@ -203,7 +223,7 @@ export function Transactions() {
                           <div className="mt-0.5 flex items-center gap-2 text-xs text-muted-foreground">
                             <span>{CATEGORY_LABELS[t.category]}</span>
                             <span>·</span>
-                            <span>{t.paidVia}</span>
+                            <span>{resolvePaidVia(t.paidVia, cardMap)}</span>
                           </div>
                         </div>
 
