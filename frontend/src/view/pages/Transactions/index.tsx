@@ -95,7 +95,7 @@ export function Transactions() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <Header showBack title="Transactions" />
+      <Header title="Transactions" />
 
       {/* Month navigation */}
       <div className="flex items-center justify-between border-b border-border px-4 py-2">
@@ -108,7 +108,7 @@ export function Transactions() {
         </Button>
       </div>
 
-      <div className="flex-1 space-y-4 px-4 py-4">
+      <div className="flex-1 space-y-4 px-4 py-4 pb-20">
         {/* Loading skeleton */}
         {loading && (
           <div className="space-y-2">

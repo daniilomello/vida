@@ -55,7 +55,7 @@ export function Summary() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <Header showBack title="Snapshot" />
+      <Header title="Snapshot" />
 
       {/* Month navigation */}
       <div className="flex items-center justify-between rounded-lg border-b border-border px-4 py-2">
@@ -73,7 +73,7 @@ export function Summary() {
         </Button>
       </div>
 
-      <div className="flex-1 space-y-4 px-4 py-4">
+      <div className="flex-1 space-y-4 px-4 py-4 pb-20">
         {/* Total spent */}
         <div className="rounded-xl border border-border bg-card px-4 py-4">
           <p className="mb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
