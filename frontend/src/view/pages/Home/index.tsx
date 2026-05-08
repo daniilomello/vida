@@ -1,4 +1,4 @@
-import { CreditCard, FileText, PlusCircle, Receipt, ScanLine } from "lucide-react";
+import { BarChart3, CreditCard, FileText, PlusCircle, Receipt, ScanLine } from "lucide-react";
 import { Link } from "react-router";
 import { useCards } from "@/app/cards/hooks/useCards";
 import { cn } from "@/app/core/utils/cn";
@@ -57,6 +57,15 @@ export function Home() {
                 <FileText className="size-5 text-primary" />
               </div>
               <span className="text-xs font-medium leading-tight">Bills</span>
+            </Link>
+            <Link
+              to="/summary"
+              className="flex flex-col items-center gap-2 rounded-xl border border-border bg-card px-3 py-4 text-center transition-colors hover:bg-muted/30"
+            >
+              <div className="flex size-10 items-center justify-center rounded-full bg-primary/10">
+                <BarChart3 className="size-5 text-primary" />
+              </div>
+              <span className="text-xs font-medium leading-tight">Snapshot</span>
             </Link>
           </div>
         </section>
