@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "postinstall": "node -e \"const fs=require('fs'),path=require('path'),cp=require('child_process');const s=path.join(process.cwd(),'scripts/patch-serverless-offline.mjs');if(!fs.existsSync(s))process.exit(0);const r=cp.spawnSync(process.execPath,[s],{stdio:'inherit'});process.exit(r.status??1);\"",
-    "dev": "NODE_OPTIONS='--import tsx/esm' serverless offline start",
+    "dev": "serverless offline start",
     "deploy:dev": "serverless deploy --stage dev",
     "check": "biome check .",
     "test": "jest --runInBand"
@@ -16,6 +16,7 @@
     "@aws-sdk/client-ses": "^3.1038.0",
     "@aws-sdk/lib-dynamodb": "^3.1038.0",
     "@middy/core": "^7.4.0",
+    "@middy/http-cors": "^7.4.0",
     "@middy/http-error-handler": "^7.4.0",
     "@middy/http-json-body-parser": "^7.4.0",
     "aws-jwt-verify": "^4.0.1",

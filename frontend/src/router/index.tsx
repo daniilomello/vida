@@ -4,8 +4,11 @@ import { ForgotPassword } from "@/view/pages/Authentication/ForgotPassword";
 import { Login } from "@/view/pages/Authentication/Login";
 import { Signup } from "@/view/pages/Authentication/Signup";
 import { Bills } from "@/view/pages/Bills";
+import { CardAudit } from "@/view/pages/CardAudit";
 import { Cards } from "@/view/pages/Cards";
 import { Home } from "@/view/pages/Home";
+import { QuickAdd } from "@/view/pages/QuickAdd";
+import { Transactions } from "@/view/pages/Transactions";
 
 export function AppRouter() {
   return (
@@ -55,6 +58,30 @@ export function AppRouter() {
         element={
           <AuthGuard>
             <Bills />
+          </AuthGuard>
+        }
+      />
+      <Route
+        path="/quick-add"
+        element={
+          <AuthGuard>
+            <QuickAdd />
+          </AuthGuard>
+        }
+      />
+      <Route
+        path="/card-audit"
+        element={
+          <AuthGuard>
+            <CardAudit />
+          </AuthGuard>
+        }
+      />
+      <Route
+        path="/transactions"
+        element={
+          <AuthGuard>
+            <Transactions />
           </AuthGuard>
         }
       />

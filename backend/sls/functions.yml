@@ -103,6 +103,123 @@ reactivateCard:
           identitySource: method.request.header.Cookie
           type: request
 
+updateBill:
+  handler: src/main/functions/bills/update-bill.updateBill
+  events:
+    - http:
+        path: api/v1/bills/{id}
+        method: put
+        cors: ${self:custom.corsConfig}
+        authorizer:
+          name: lambdaAuthorizer
+          resultTtlInSeconds: 300
+          identitySource: method.request.header.Cookie
+          type: request
+
+deleteBill:
+  handler: src/main/functions/bills/delete-bill.deleteBill
+  events:
+    - http:
+        path: api/v1/bills/{id}
+        method: delete
+        cors: ${self:custom.corsConfig}
+        authorizer:
+          name: lambdaAuthorizer
+          resultTtlInSeconds: 300
+          identitySource: method.request.header.Cookie
+          type: request
+
+reactivateBill:
+  handler: src/main/functions/bills/reactivate-bill.reactivateBill
+  events:
+    - http:
+        path: api/v1/bills/{id}/reactivate
+        method: put
+        cors: ${self:custom.corsConfig}
+        authorizer:
+          name: lambdaAuthorizer
+          resultTtlInSeconds: 300
+          identitySource: method.request.header.Cookie
+          type: request
+
+createTransaction:
+  handler: src/main/functions/transactions/create-transaction.createTransaction
+  events:
+    - http:
+        path: api/v1/transactions
+        method: post
+        cors: ${self:custom.corsConfig}
+        authorizer:
+          name: lambdaAuthorizer
+          resultTtlInSeconds: 300
+          identitySource: method.request.header.Cookie
+          type: request
+
+getTransactions:
+  handler: src/main/functions/transactions/get-transactions.getTransactions
+  events:
+    - http:
+        path: api/v1/transactions
+        method: get
+        cors: ${self:custom.corsConfig}
+        authorizer:
+          name: lambdaAuthorizer
+          resultTtlInSeconds: 300
+          identitySource: method.request.header.Cookie
+          type: request
+
+deleteTransaction:
+  handler: src/main/functions/transactions/delete-transaction.deleteTransaction
+  events:
+    - http:
+        path: api/v1/transactions/{id}
+        method: delete
+        cors: ${self:custom.corsConfig}
+        authorizer:
+          name: lambdaAuthorizer
+          resultTtlInSeconds: 300
+          identitySource: method.request.header.Cookie
+          type: request
+
+markBillPaid:
+  handler: src/main/functions/transactions/mark-bill-paid.markBillPaid
+  events:
+    - http:
+        path: api/v1/transactions/{id}/pay
+        method: put
+        cors: ${self:custom.corsConfig}
+        authorizer:
+          name: lambdaAuthorizer
+          resultTtlInSeconds: 300
+          identitySource: method.request.header.Cookie
+          type: request
+
+createBill:
+  handler: src/main/functions/bills/create-bill.createBill
+  events:
+    - http:
+        path: api/v1/bills
+        method: post
+        cors: ${self:custom.corsConfig}
+        authorizer:
+          name: lambdaAuthorizer
+          resultTtlInSeconds: 300
+          identitySource: method.request.header.Cookie
+          type: request
+
+getBills:
+  handler: src/main/functions/bills/get-bills.getBills
+  events:
+    - http:
+        path: api/v1/bills
+        method: get
+        cors: ${self:custom.corsConfig}
+        authorizer:
+          name: lambdaAuthorizer
+          resultTtlInSeconds: 300
+          identitySource: method.request.header.Cookie
+          type: request
+
 defineAuthChallenge:
   handler: src/main/functions/auth/define-auth-challenge.handler
 

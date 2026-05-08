@@ -1,4 +1,4 @@
-import { CreditCard, FileText } from "lucide-react";
+import { CreditCard, FileText, PlusCircle, Receipt, ScanLine } from "lucide-react";
 import { Link } from "react-router";
 import { useCards } from "@/app/cards/hooks/useCards";
 import { cn } from "@/app/core/utils/cn";
@@ -21,24 +21,42 @@ export function Home() {
           <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
             Quick Actions
           </h2>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-3">
             <Link
-              to="/bills"
-              className="flex items-center gap-3 rounded-lg border border-border bg-card px-3 py-3 hover:bg-muted/30 transition-colors"
+              to="/quick-add"
+              className="flex flex-col items-center gap-2 rounded-xl border border-border bg-card px-3 py-4 text-center transition-colors hover:bg-muted/30"
             >
-              <div className="flex size-8 shrink-0 items-center justify-center rounded-md bg-primary/10">
-                <FileText className="size-4 text-primary" />
+              <div className="flex size-10 items-center justify-center rounded-full bg-primary/10">
+                <PlusCircle className="size-5 text-primary" />
               </div>
-              <span className="text-sm font-medium">Bills</span>
+              <span className="text-xs font-medium leading-tight">Quick Add</span>
             </Link>
             <Link
-              to="/cards"
-              className="flex items-center gap-3 rounded-lg border border-border bg-card px-3 py-3 hover:bg-muted/30 transition-colors"
+              to="/transactions"
+              className="flex flex-col items-center gap-2 rounded-xl border border-border bg-card px-3 py-4 text-center transition-colors hover:bg-muted/30"
             >
-              <div className="flex size-8 shrink-0 items-center justify-center rounded-md bg-primary/10">
-                <CreditCard className="size-4 text-primary" />
+              <div className="flex size-10 items-center justify-center rounded-full bg-primary/10">
+                <Receipt className="size-5 text-primary" />
               </div>
-              <span className="text-sm font-medium">Cards</span>
+              <span className="text-xs font-medium leading-tight">Transactions</span>
+            </Link>
+            <Link
+              to="/card-audit"
+              className="flex flex-col items-center gap-2 rounded-xl border border-border bg-card px-3 py-4 text-center transition-colors hover:bg-muted/30"
+            >
+              <div className="flex size-10 items-center justify-center rounded-full bg-primary/10">
+                <ScanLine className="size-5 text-primary" />
+              </div>
+              <span className="text-xs font-medium leading-tight">Card Audit</span>
+            </Link>
+            <Link
+              to="/bills"
+              className="flex flex-col items-center gap-2 rounded-xl border border-border bg-card px-3 py-4 text-center transition-colors hover:bg-muted/30"
+            >
+              <div className="flex size-10 items-center justify-center rounded-full bg-primary/10">
+                <FileText className="size-5 text-primary" />
+              </div>
+              <span className="text-xs font-medium leading-tight">Bills</span>
             </Link>
           </div>
         </section>
