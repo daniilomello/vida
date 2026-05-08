@@ -3,6 +3,7 @@ import { AuthGuard, GuestGuard } from "@/router/authGuard";
 import { ForgotPassword } from "@/view/pages/Authentication/ForgotPassword";
 import { Login } from "@/view/pages/Authentication/Login";
 import { Signup } from "@/view/pages/Authentication/Signup";
+import { CardAudit } from "@/view/pages/CardAudit";
 import { Cards } from "@/view/pages/Cards";
 import { Home } from "@/view/pages/Home";
 import { QuickAdd } from "@/view/pages/QuickAdd";
@@ -55,6 +56,14 @@ export function AppRouter() {
         element={
           <AuthGuard>
             <QuickAdd />
+          </AuthGuard>
+        }
+      />
+      <Route
+        path="/card-audit"
+        element={
+          <AuthGuard>
+            <CardAudit />
           </AuthGuard>
         }
       />
