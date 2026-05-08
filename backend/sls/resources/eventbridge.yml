@@ -1,0 +1,46 @@
+Resources:
+  GenerateMonthlyBillsDLQ:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: GenerateMonthlyBillsDLQ-${self:provider.stage}
+      MessageRetentionPeriod: 1209600
+
+  GenerateMonthlyBillsDLQPolicy:
+    Type: AWS::SQS::QueuePolicy
+    Properties:
+      Queues:
+        - !Ref GenerateMonthlyBillsDLQ
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: events.amazonaws.com
+            Action: sqs:SendMessage
+            Resource: !GetAtt GenerateMonthlyBillsDLQ.Arn
+            Condition:
+              ArnEquals:
+                aws:SourceArn: !GetAtt GenerateMonthlyBillsRule.Arn
+
+  GenerateMonthlyBillsRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Name: GenerateMonthlyBillsRule-${self:provider.stage}
+      Description: Triggers generateMonthlyBills on the 1st of every month at midnight UTC
+      ScheduleExpression: cron(0 0 1 * ? *)
+      State: ENABLED
+      Targets:
+        - Id: GenerateMonthlyBillsTarget
+          Arn: !GetAtt GenerateMonthlyBillsLambdaFunction.Arn
+          RetryPolicy:
+            MaximumRetryAttempts: 3
+            MaximumEventAgeInSeconds: 10800
+          DeadLetterConfig:
+            Arn: !GetAtt GenerateMonthlyBillsDLQ.Arn
+
+  GenerateMonthlyBillsLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt GenerateMonthlyBillsLambdaFunction.Arn
+      Action: lambda:InvokeFunction
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt GenerateMonthlyBillsRule.Arn

@@ -233,6 +233,9 @@ getMonthlySummary:
           identitySource: method.request.header.Cookie
           type: request
 
+generateMonthlyBills:
+  handler: src/main/functions/bills/generate-monthly-bills.generateMonthlyBills
+
 defineAuthChallenge:
   handler: src/main/functions/auth/define-auth-challenge.handler
 
