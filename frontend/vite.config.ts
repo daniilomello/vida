@@ -11,6 +11,7 @@ export default defineConfig({
     VitePWA({
       registerType: "autoUpdate",
       injectRegister: "auto",
+      includeAssets: ["favicon.svg", "apple-touch-icon.png", "mask-icon.svg"],
       manifest: {
         name: "Vida — Finanças Pessoais",
         short_name: "Vida",
