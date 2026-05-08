@@ -3,6 +3,7 @@ import { AuthGuard, GuestGuard } from "@/router/authGuard";
 import { ForgotPassword } from "@/view/pages/Authentication/ForgotPassword";
 import { Login } from "@/view/pages/Authentication/Login";
 import { Signup } from "@/view/pages/Authentication/Signup";
+import { Bills } from "@/view/pages/Bills";
 import { Cards } from "@/view/pages/Cards";
 import { Home } from "@/view/pages/Home";
 
@@ -46,6 +47,14 @@ export function AppRouter() {
         element={
           <AuthGuard>
             <Cards />
+          </AuthGuard>
+        }
+      />
+      <Route
+        path="/bills"
+        element={
+          <AuthGuard>
+            <Bills />
           </AuthGuard>
         }
       />

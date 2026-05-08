@@ -1,4 +1,4 @@
-import { CreditCard } from "lucide-react";
+import { CreditCard, FileText } from "lucide-react";
 import { Link } from "react-router";
 import { useCards } from "@/app/cards/hooks/useCards";
 import { cn } from "@/app/core/utils/cn";
@@ -17,6 +17,32 @@ export function Home() {
       <Header />
 
       <main className="flex-1 px-4 py-6 space-y-6">
+        <section>
+          <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            Quick Actions
+          </h2>
+          <div className="grid grid-cols-2 gap-2">
+            <Link
+              to="/bills"
+              className="flex items-center gap-3 rounded-lg border border-border bg-card px-3 py-3 hover:bg-muted/30 transition-colors"
+            >
+              <div className="flex size-8 shrink-0 items-center justify-center rounded-md bg-primary/10">
+                <FileText className="size-4 text-primary" />
+              </div>
+              <span className="text-sm font-medium">Bills</span>
+            </Link>
+            <Link
+              to="/cards"
+              className="flex items-center gap-3 rounded-lg border border-border bg-card px-3 py-3 hover:bg-muted/30 transition-colors"
+            >
+              <div className="flex size-8 shrink-0 items-center justify-center rounded-md bg-primary/10">
+                <CreditCard className="size-4 text-primary" />
+              </div>
+              <span className="text-sm font-medium">Cards</span>
+            </Link>
+          </div>
+        </section>
+
         <section>
           <div className="mb-3 flex items-center justify-between">
             <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
