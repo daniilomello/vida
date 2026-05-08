@@ -56,7 +56,20 @@
       "WebFetch(domain:docs.anthropic.com)",
       "WebFetch(domain:www.layoutscene.com)",
       "Bash(xargs ls *)",
-      "Bash(xargs cat *)"
+      "Bash(xargs cat *)",
+      "Bash(gh secret *)",
+      "Bash(FRONTEND_ORIGIN=https://vida.danilabs.com.br serverless deploy --stage prod)",
+      "Bash(curl -s -I -X OPTIONS https://j91buw434c.execute-api.us-east-1.amazonaws.com/prod/api/v1/auth/session -H 'Origin: https://vida.danilabs.com.br' -H 'Access-Control-Request-Method: POST' -H 'Access-Control-Request-Headers: Content-Type')",
+      "Bash(aws s3 *)",
+      "Bash(aws cloudfront *)",
+      "Bash(aws cloudformation describe-stacks *)",
+      "Bash(curl *)",
+      "Bash(serverless deploy *)",
+      "Bash(serverless package *)",
+      "Bash(unzip *)",
+      "Bash(ln -s /Users/danilo/www/vida/frontend/node_modules /Users/danilo/www/vida/.claude/worktrees/agent-a5a51431c7eb3bfd1/frontend/node_modules)",
+      "Bash(ln -sfn /Users/danilo/www/vida/frontend/node_modules /Users/danilo/www/vida/.claude/worktrees/agent-a89e5cf8cd45fb077/frontend/node_modules)",
+      "mcp__github__merge_pull_request"
     ]
   }
 }
