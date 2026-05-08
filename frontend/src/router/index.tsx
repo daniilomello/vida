@@ -8,6 +8,7 @@ import { CardAudit } from "@/view/pages/CardAudit";
 import { Cards } from "@/view/pages/Cards";
 import { Home } from "@/view/pages/Home";
 import { QuickAdd } from "@/view/pages/QuickAdd";
+import { Summary } from "@/view/pages/Summary";
 import { Transactions } from "@/view/pages/Transactions";
 
 export function AppRouter() {
@@ -82,6 +83,14 @@ export function AppRouter() {
         element={
           <AuthGuard>
             <Transactions />
+          </AuthGuard>
+        }
+      />
+      <Route
+        path="/summary"
+        element={
+          <AuthGuard>
+            <Summary />
           </AuthGuard>
         }
       />
