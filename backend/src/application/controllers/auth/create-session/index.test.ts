@@ -41,7 +41,7 @@ describe("createSession", () => {
 
     expect(idCookie).toContain("id.token.value");
     expect(idCookie).toContain("HttpOnly");
-    expect(idCookie).toContain("SameSite=Strict");
+    expect(idCookie).toContain("SameSite=None");
 
     expect(accessCookie).toContain("access.token.value");
     expect(refreshCookie).toContain("refresh.token.value");

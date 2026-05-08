@@ -1,0 +1,46 @@
+Resources:
+  # Inject CORS headers on all API Gateway-generated error responses so the
+  # browser sees the header even when the Lambda handler never runs.
+  # DEFAULT_4XX/5XX are catch-alls but do NOT override specific types like
+  # UNAUTHORIZED (401) or ACCESS_DENIED (403), so those are listed explicitly.
+  GatewayResponseDefault4XX:
+    Type: AWS::ApiGateway::GatewayResponse
+    Properties:
+      ResponseParameters:
+        gatewayresponse.header.Access-Control-Allow-Origin: "'${self:custom.corsConfig.origin}'"
+        gatewayresponse.header.Access-Control-Allow-Headers: "'Content-Type,X-Requested-With'"
+        gatewayresponse.header.Access-Control-Allow-Credentials: "'true'"
+      ResponseType: DEFAULT_4XX
+      RestApiId: !Ref ApiGatewayRestApi
+
+  GatewayResponseDefault5XX:
+    Type: AWS::ApiGateway::GatewayResponse
+    Properties:
+      ResponseParameters:
+        gatewayresponse.header.Access-Control-Allow-Origin: "'${self:custom.corsConfig.origin}'"
+        gatewayresponse.header.Access-Control-Allow-Headers: "'Content-Type,X-Requested-With'"
+        gatewayresponse.header.Access-Control-Allow-Credentials: "'true'"
+      ResponseType: DEFAULT_5XX
+      RestApiId: !Ref ApiGatewayRestApi
+
+  # 401 — identity source missing / authorizer throws "Unauthorized"
+  GatewayResponseUnauthorized:
+    Type: AWS::ApiGateway::GatewayResponse
+    Properties:
+      ResponseParameters:
+        gatewayresponse.header.Access-Control-Allow-Origin: "'${self:custom.corsConfig.origin}'"
+        gatewayresponse.header.Access-Control-Allow-Headers: "'Content-Type,X-Requested-With'"
+        gatewayresponse.header.Access-Control-Allow-Credentials: "'true'"
+      ResponseType: UNAUTHORIZED
+      RestApiId: !Ref ApiGatewayRestApi
+
+  # 403 — authorizer returns Deny policy
+  GatewayResponseAccessDenied:
+    Type: AWS::ApiGateway::GatewayResponse
+    Properties:
+      ResponseParameters:
+        gatewayresponse.header.Access-Control-Allow-Origin: "'${self:custom.corsConfig.origin}'"
+        gatewayresponse.header.Access-Control-Allow-Headers: "'Content-Type,X-Requested-With'"
+        gatewayresponse.header.Access-Control-Allow-Credentials: "'true'"
+      ResponseType: ACCESS_DENIED
+      RestApiId: !Ref ApiGatewayRestApi

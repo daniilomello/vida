@@ -57,3 +57,4 @@ frontend/vitest.config.d.ts
 # Misc
 .cache/
 tmp/
+.claude/worktrees/

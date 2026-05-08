@@ -23,7 +23,7 @@ describe("Home", () => {
 
   it("should render the Cards section heading", () => {
     renderHome();
-    expect(screen.getByText("Cards")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Cards" })).toBeInTheDocument();
   });
 
   it("should render the See all link to /cards", () => {
