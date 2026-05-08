@@ -1,4 +1,4 @@
-import { CreditCard, PlusCircle, Receipt, ScanLine } from "lucide-react";
+import { CreditCard, FileText, PlusCircle, Receipt, ScanLine } from "lucide-react";
 import { Link } from "react-router";
 import { useCards } from "@/app/cards/hooks/useCards";
 import { cn } from "@/app/core/utils/cn";
@@ -21,7 +21,7 @@ export function Home() {
           <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
             Quick Actions
           </h2>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 gap-3">
             <Link
               to="/quick-add"
               className="flex flex-col items-center gap-2 rounded-xl border border-border bg-card px-3 py-4 text-center transition-colors hover:bg-muted/30"
@@ -48,6 +48,15 @@ export function Home() {
                 <ScanLine className="size-5 text-primary" />
               </div>
               <span className="text-xs font-medium leading-tight">Card Audit</span>
+            </Link>
+            <Link
+              to="/bills"
+              className="flex flex-col items-center gap-2 rounded-xl border border-border bg-card px-3 py-4 text-center transition-colors hover:bg-muted/30"
+            >
+              <div className="flex size-10 items-center justify-center rounded-full bg-primary/10">
+                <FileText className="size-5 text-primary" />
+              </div>
+              <span className="text-xs font-medium leading-tight">Bills</span>
             </Link>
           </div>
         </section>
