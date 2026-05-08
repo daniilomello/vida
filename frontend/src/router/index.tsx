@@ -5,6 +5,7 @@ import { Login } from "@/view/pages/Authentication/Login";
 import { Signup } from "@/view/pages/Authentication/Signup";
 import { Cards } from "@/view/pages/Cards";
 import { Home } from "@/view/pages/Home";
+import { QuickAdd } from "@/view/pages/QuickAdd";
 
 export function AppRouter() {
   return (
@@ -46,6 +47,14 @@ export function AppRouter() {
         element={
           <AuthGuard>
             <Cards />
+          </AuthGuard>
+        }
+      />
+      <Route
+        path="/quick-add"
+        element={
+          <AuthGuard>
+            <QuickAdd />
           </AuthGuard>
         }
       />
