@@ -103,6 +103,45 @@ reactivateCard:
           identitySource: method.request.header.Cookie
           type: request
 
+updateBill:
+  handler: src/main/functions/bills/update-bill.updateBill
+  events:
+    - http:
+        path: api/v1/bills/{id}
+        method: put
+        cors: ${self:custom.corsConfig}
+        authorizer:
+          name: lambdaAuthorizer
+          resultTtlInSeconds: 300
+          identitySource: method.request.header.Cookie
+          type: request
+
+deleteBill:
+  handler: src/main/functions/bills/delete-bill.deleteBill
+  events:
+    - http:
+        path: api/v1/bills/{id}
+        method: delete
+        cors: ${self:custom.corsConfig}
+        authorizer:
+          name: lambdaAuthorizer
+          resultTtlInSeconds: 300
+          identitySource: method.request.header.Cookie
+          type: request
+
+reactivateBill:
+  handler: src/main/functions/bills/reactivate-bill.reactivateBill
+  events:
+    - http:
+        path: api/v1/bills/{id}/reactivate
+        method: put
+        cors: ${self:custom.corsConfig}
+        authorizer:
+          name: lambdaAuthorizer
+          resultTtlInSeconds: 300
+          identitySource: method.request.header.Cookie
+          type: request
+
 createTransaction:
   handler: src/main/functions/transactions/create-transaction.createTransaction
   events:
