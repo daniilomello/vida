@@ -1,5 +1,6 @@
-import { Navigate, Route, Routes } from "react-router";
+import { Navigate, Route, Routes, useLocation } from "react-router";
 import { AuthGuard, GuestGuard } from "@/router/authGuard";
+import { BottomNav } from "@/view/components/BottomNav";
 import { ForgotPassword } from "@/view/pages/Authentication/ForgotPassword";
 import { Login } from "@/view/pages/Authentication/Login";
 import { Signup } from "@/view/pages/Authentication/Signup";
@@ -12,89 +13,96 @@ import { Summary } from "@/view/pages/Summary";
 import { Transactions } from "@/view/pages/Transactions";
 
 export function AppRouter() {
+  const location = useLocation();
+
   return (
-    <Routes>
-      <Route
-        path="/login"
-        element={
-          <GuestGuard>
-            <Login />
-          </GuestGuard>
-        }
-      />
-      <Route
-        path="/signup"
-        element={
-          <GuestGuard>
-            <Signup />
-          </GuestGuard>
-        }
-      />
-      <Route
-        path="/forgot-password"
-        element={
-          <GuestGuard>
-            <ForgotPassword />
-          </GuestGuard>
-        }
-      />
-      <Route
-        path="/"
-        element={
-          <AuthGuard>
-            <Home />
-          </AuthGuard>
-        }
-      />
-      <Route
-        path="/cards"
-        element={
-          <AuthGuard>
-            <Cards />
-          </AuthGuard>
-        }
-      />
-      <Route
-        path="/bills"
-        element={
-          <AuthGuard>
-            <Bills />
-          </AuthGuard>
-        }
-      />
-      <Route
-        path="/quick-add"
-        element={
-          <AuthGuard>
-            <QuickAdd />
-          </AuthGuard>
-        }
-      />
-      <Route
-        path="/card-audit"
-        element={
-          <AuthGuard>
-            <CardAudit />
-          </AuthGuard>
-        }
-      />
-      <Route
-        path="/transactions"
-        element={
-          <AuthGuard>
-            <Transactions />
-          </AuthGuard>
-        }
-      />
-      <Route
-        path="/summary"
-        element={
-          <AuthGuard>
-            <Summary />
-          </AuthGuard>
-        }
-      />
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+    <>
+      <div key={location.key} className="animate-in fade-in-0 duration-150">
+        <Routes>
+          <Route
+            path="/login"
+            element={
+              <GuestGuard>
+                <Login />
+              </GuestGuard>
+            }
+          />
+          <Route
+            path="/signup"
+            element={
+              <GuestGuard>
+                <Signup />
+              </GuestGuard>
+            }
+          />
+          <Route
+            path="/forgot-password"
+            element={
+              <GuestGuard>
+                <ForgotPassword />
+              </GuestGuard>
+            }
+          />
+          <Route
+            path="/"
+            element={
+              <AuthGuard>
+                <Home />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/cards"
+            element={
+              <AuthGuard>
+                <Cards />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/bills"
+            element={
+              <AuthGuard>
+                <Bills />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/quick-add"
+            element={
+              <AuthGuard>
+                <QuickAdd />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/card-audit"
+            element={
+              <AuthGuard>
+                <CardAudit />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/transactions"
+            element={
+              <AuthGuard>
+                <Transactions />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/summary"
+            element={
+              <AuthGuard>
+                <Summary />
+              </AuthGuard>
+            }
+          />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </div>
+      <BottomNav />
+    </>
   );
 }

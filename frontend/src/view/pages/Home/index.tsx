@@ -16,7 +16,7 @@ export function Home() {
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
 
-      <main className="flex-1 px-4 py-6 space-y-6">
+      <main className="flex-1 px-4 py-6 pb-20 space-y-6">
         <section>
           <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
             Quick Actions
