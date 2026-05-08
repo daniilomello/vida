@@ -155,6 +155,32 @@ markBillPaid:
           identitySource: method.request.header.Cookie
           type: request
 
+createBill:
+  handler: src/main/functions/bills/create-bill.createBill
+  events:
+    - http:
+        path: api/v1/bills
+        method: post
+        cors: ${self:custom.corsConfig}
+        authorizer:
+          name: lambdaAuthorizer
+          resultTtlInSeconds: 300
+          identitySource: method.request.header.Cookie
+          type: request
+
+getBills:
+  handler: src/main/functions/bills/get-bills.getBills
+  events:
+    - http:
+        path: api/v1/bills
+        method: get
+        cors: ${self:custom.corsConfig}
+        authorizer:
+          name: lambdaAuthorizer
+          resultTtlInSeconds: 300
+          identitySource: method.request.header.Cookie
+          type: request
+
 defineAuthChallenge:
   handler: src/main/functions/auth/define-auth-challenge.handler
 
