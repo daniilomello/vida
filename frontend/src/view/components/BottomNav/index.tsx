@@ -8,7 +8,7 @@ const NAV_ITEMS = [
   { to: "/quick-add", icon: PlusCircle, label: "Add", accent: true },
   { to: "/bills", icon: FileText, label: "Bills" },
   { to: "/summary", icon: BarChart3, label: "Summary" },
-] as const;
+];
 
 const HUB_PATHS = ["/", "/transactions", "/quick-add", "/bills", "/summary"];
 
