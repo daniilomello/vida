@@ -2,7 +2,7 @@ import { GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import type { APIGatewayProxyHandler } from "aws-lambda";
 import { docClient, TABLE_NAME } from "../../../clients/dynamodb";
 import { createError } from "../../../errors";
-import { VALID_CATEGORIES } from "../../../types/bills";
+import { BILL_CATEGORIES } from "../../../types/bills";
 
 export const handler: APIGatewayProxyHandler = async (event) => {
   const userId = event.requestContext.authorizer?.principalId;
@@ -33,9 +33,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
 
   if (
     category !== undefined &&
-    !VALID_CATEGORIES.includes(category as (typeof VALID_CATEGORIES)[number])
+    !BILL_CATEGORIES.includes(category as (typeof BILL_CATEGORIES)[number])
   ) {
-    throw createError(400, `category must be one of: ${VALID_CATEGORIES.join(", ")}`);
+    throw createError(400, `category must be one of: ${BILL_CATEGORIES.join(", ")}`);
   }
 
   const PK = `USER#${userId}`;
