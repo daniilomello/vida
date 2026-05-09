@@ -9,12 +9,20 @@ provider:
 params:
   default:
     domain: vida-staging.danilabs.com.br
+    apiGatewayDomain: x37y1ygnpb.execute-api.us-east-1.amazonaws.com
+    apiGatewayStage: staging
   dev:
     domain: vida-dev.danilabs.com.br
+    apiGatewayDomain: 7392ysbevf.execute-api.us-east-1.amazonaws.com
+    apiGatewayStage: dev
   staging:
     domain: vida-staging.danilabs.com.br
+    apiGatewayDomain: x37y1ygnpb.execute-api.us-east-1.amazonaws.com
+    apiGatewayStage: staging
   prod:
     domain: vida.danilabs.com.br
+    apiGatewayDomain: j91buw434c.execute-api.us-east-1.amazonaws.com
+    apiGatewayStage: prod
 
 resources:
   Resources:
@@ -71,6 +79,24 @@ resources:
               DomainName: !GetAtt FrontendBucket.RegionalDomainName
               OriginAccessControlId: !GetAtt FrontendOAC.Id
               S3OriginConfig: {}
+            - Id: ApiGatewayOrigin
+              DomainName: ${param:apiGatewayDomain}
+              OriginPath: /${param:apiGatewayStage}
+              CustomOriginConfig:
+                HTTPSPort: 443
+                OriginProtocolPolicy: https-only
+                OriginSSLProtocols:
+                  - TLSv1.2
+          CacheBehaviors:
+            - PathPattern: /api/*
+              TargetOriginId: ApiGatewayOrigin
+              ViewerProtocolPolicy: https-only
+              AllowedMethods: [GET, HEAD, OPTIONS, PUT, POST, PATCH, DELETE]
+              CachedMethods: [GET, HEAD]
+              # CachingDisabled — never cache API responses
+              CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad
+              # AllViewerExceptHostHeader — forward cookies, query strings, and all headers
+              OriginRequestPolicyId: b689b0a8-53d0-40ab-baf2-68738e2966ac
           DefaultCacheBehavior:
             TargetOriginId: S3Origin
             ViewerProtocolPolicy: redirect-to-https
