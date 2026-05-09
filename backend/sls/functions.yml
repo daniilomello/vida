@@ -220,6 +220,22 @@ getBills:
           identitySource: method.request.header.Cookie
           type: request
 
+getMonthlySummary:
+  handler: src/main/functions/summary/get-monthly-summary.getMonthlySummary
+  events:
+    - http:
+        path: api/v1/summary
+        method: get
+        cors: ${self:custom.corsConfig}
+        authorizer:
+          name: lambdaAuthorizer
+          resultTtlInSeconds: 300
+          identitySource: method.request.header.Cookie
+          type: request
+
+generateMonthlyBills:
+  handler: src/main/functions/bills/generate-monthly-bills.generateMonthlyBills
+
 defineAuthChallenge:
   handler: src/main/functions/auth/define-auth-challenge.handler
 

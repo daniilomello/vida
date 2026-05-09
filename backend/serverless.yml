@@ -39,4 +39,5 @@ resources:
   - ${file(./sls/resources/dynamodb.yml)}
   - ${file(./sls/resources/cognito.yml)}
   - ${file(./sls/resources/gateway-responses.yml)}
+  - ${file(./sls/resources/eventbridge.yml)}
   - ${file(./sls/outputs.yml)}

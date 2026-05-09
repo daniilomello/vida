@@ -154,7 +154,6 @@ export function Bills() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header
-        showBack
         title="Bills"
         right={
           tab === "active" ? (
@@ -190,7 +189,7 @@ export function Bills() {
         ))}
       </div>
 
-      <div className="flex-1 space-y-2 px-4 py-4">
+      <div className="flex-1 space-y-2 px-4 py-4 pb-20">
         {showAddForm && tab === "active" && (
           <div className="rounded-lg border border-dashed border-border bg-muted/20 px-3 py-3 space-y-2">
             <div className="flex items-center gap-2">
