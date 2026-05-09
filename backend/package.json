@@ -1,7 +1,7 @@
 {
   "name": "@vida/backend",
   "private": true,
-  "version": "2.0.0",
+  "version": "2.0.1",
   "type": "module",
   "scripts": {
     "postinstall": "node -e \"const fs=require('fs'),path=require('path'),cp=require('child_process');const s=path.join(process.cwd(),'scripts/patch-serverless-offline.mjs');if(!fs.existsSync(s))process.exit(0);const r=cp.spawnSync(process.execPath,[s],{stdio:'inherit'});process.exit(r.status??1);\"",
